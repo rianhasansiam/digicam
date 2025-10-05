@@ -10,7 +10,10 @@ import {
   User,
   Trash2,
   Plus,
-  X
+  X,
+  Check,
+  XCircle,
+  Clock
 } from 'lucide-react';
 import AddReviewModal from './AddReviewModal';
 import { useGetData } from '../../../../../lib/hooks/useGetData';
@@ -26,6 +29,9 @@ const AllReviewsClient = ({reviewsData}) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedReview, setSelectedReview] = useState(null);
   const [deletingReviewId, setDeletingReviewId] = useState(null);
+  const [approvingReviewId, setApprovingReviewId] = useState(null);
+  const [rejectingReviewId, setRejectingReviewId] = useState(null);
+  const [filterStatus, setFilterStatus] = useState('all');
   
   // Fetch live reviews data from database
   const { data: liveReviewsData, refetch: refetchReviews } = useGetData({
@@ -42,8 +48,8 @@ const AllReviewsClient = ({reviewsData}) => {
       totalReviews: reviewsList.length || 0,
       averageRating: reviewsList.length > 0 ? 
         (reviewsList.reduce((sum, review) => sum + (review.rating || 0), 0) / reviewsList.length).toFixed(1) : 0,
-      pendingReviews: reviewsList.filter(review => review.status === 'pending').length || 0,
-      approvedReviews: reviewsList.filter(review => review.status === 'approved').length || 0
+      pendingReviews: reviewsList.filter(review => review.isApproved === false).length || 0,
+      approvedReviews: reviewsList.filter(review => review.isApproved === true).length || 0
     }
   };
 
@@ -70,9 +76,13 @@ const AllReviewsClient = ({reviewsData}) => {
 
   const filteredReviews = reviews.filter(review => {
     const matchesSearch = review.productName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         review.customerName?.toLowerCase().includes(searchTerm.toLowerCase());
+                         review.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         review.userName?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRating = filterRating === 'all' || review.rating.toString() === filterRating;
-    return matchesSearch && matchesRating;
+    const matchesStatus = filterStatus === 'all' || 
+                         (filterStatus === 'approved' && review.isApproved === true) ||
+                         (filterStatus === 'pending' && review.isApproved === false);
+    return matchesSearch && matchesRating && matchesStatus;
   });
 
   const getRatingStars = (rating) => {
@@ -131,6 +141,72 @@ const AllReviewsClient = ({reviewsData}) => {
   const handleDeleteClick = (review) => {
     setSelectedReview(review);
     setShowDeleteModal(true);
+  };
+
+  // Handle approve review
+  const handleApproveReview = async (review) => {
+    const reviewId = review._id || review.id;
+    setApprovingReviewId(reviewId);
+    
+    try {
+      const response = await axios.put('/api/reviews', {
+        _id: reviewId,
+        isApproved: true
+      });
+      
+      if (response.data.success) {
+        setToast({
+          show: true,
+          type: 'success',
+          message: 'Review approved successfully!'
+        });
+        refetchReviews();
+      } else {
+        throw new Error(response.data.error || 'Failed to approve review');
+      }
+    } catch (error) {
+      console.error('Approve failed:', error);
+      setToast({
+        show: true,
+        type: 'error',
+        message: error.response?.data?.error || error.message || 'Failed to approve review'
+      });
+    } finally {
+      setApprovingReviewId(null);
+    }
+  };
+
+  // Handle reject review
+  const handleRejectReview = async (review) => {
+    const reviewId = review._id || review.id;
+    setRejectingReviewId(reviewId);
+    
+    try {
+      const response = await axios.put('/api/reviews', {
+        _id: reviewId,
+        isApproved: false
+      });
+      
+      if (response.data.success) {
+        setToast({
+          show: true,
+          type: 'success',
+          message: 'Review rejected successfully!'
+        });
+        refetchReviews();
+      } else {
+        throw new Error(response.data.error || 'Failed to reject review');
+      }
+    } catch (error) {
+      console.error('Reject failed:', error);
+      setToast({
+        show: true,
+        type: 'error',
+        message: error.response?.data?.error || error.message || 'Failed to reject review'
+      });
+    } finally {
+      setRejectingReviewId(null);
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -208,18 +284,29 @@ const AllReviewsClient = ({reviewsData}) => {
           <p className="text-2xl font-bold text-gray-900 mt-1">{totalReviews}</p>
         </div>
         
-
-        
         <div className="bg-white rounded-xl p-4 shadow-sm">
           <div className="flex items-center space-x-2">
-            <Star className="text-gray-600" size={20} />
+            <Star className="text-yellow-500" size={20} />
             <span className="text-sm text-gray-600">Avg Rating</span>
           </div>
           <p className="text-2xl font-bold text-gray-600 mt-1">{stats.averageRating || 0}</p>
         </div>
         
-      
-
+        <div className="bg-white rounded-xl p-4 shadow-sm">
+          <div className="flex items-center space-x-2">
+            <Clock className="text-orange-500" size={20} />
+            <span className="text-sm text-gray-600">Pending</span>
+          </div>
+          <p className="text-2xl font-bold text-orange-600 mt-1">{pendingReviews}</p>
+        </div>
+        
+        <div className="bg-white rounded-xl p-4 shadow-sm">
+          <div className="flex items-center space-x-2">
+            <Check className="text-green-500" size={20} />
+            <span className="text-sm text-gray-600">Approved</span>
+          </div>
+          <p className="text-2xl font-bold text-green-600 mt-1">{approvedReviews}</p>
+        </div>
       </div>
 
       {/* Filters and Search */}
@@ -248,6 +335,16 @@ const AllReviewsClient = ({reviewsData}) => {
             <option value="2">2 Stars</option>
             <option value="1">1 Star</option>
           </select>
+          
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+          >
+            <option value="all">All Status</option>
+            <option value="pending">Pending Approval</option>
+            <option value="approved">Approved</option>
+          </select>
         </div>
       </div>
 
@@ -264,16 +361,28 @@ const AllReviewsClient = ({reviewsData}) => {
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2">
-                  <h3 className="text-lg font-bold text-gray-900">{review.title || `Review by ${review.customerName}`}</h3>
+                  <h3 className="text-lg font-bold text-gray-900">{review.title || `Review by ${review.customerName || review.userName}`}</h3>
+                  {/* Approval Status Badge */}
+                  {review.isApproved === true ? (
+                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <Check size={14} />
+                      Approved
+                    </span>
+                  ) : (
+                    <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      <Clock size={14} />
+                      Pending
+                    </span>
+                  )}
                 </div>
                 
                 <div className="flex items-center space-x-4 mb-3">
                   <div className="flex items-center space-x-1">
                     {getRatingStars(review.rating)}
                   </div>
-                  <span className="text-sm text-gray-600">by {review.customerName}</span>
+                  <span className="text-sm text-gray-600">by {review.customerName || review.userName || 'Anonymous'}</span>
                   <span className="text-sm text-gray-500">
-                    {new Date(review.createdAt).toLocaleDateString('en-US', {
+                    {new Date(review.createdAt || Date.now()).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'short', 
                       day: 'numeric'
@@ -281,7 +390,10 @@ const AllReviewsClient = ({reviewsData}) => {
                   </span>
                 </div>
                 
-                <p className="text-sm text-gray-600 mb-2">Product: <span className="font-medium">{review.productName}</span></p>
+                <p className="text-sm text-gray-600 mb-2">Product: <span className="font-medium">{review.productName || 'Unknown Product'}</span></p>
+                {review.userEmail && (
+                  <p className="text-sm text-gray-500 mb-2">Email: {review.userEmail}</p>
+                )}
                 <p className="text-gray-700 leading-relaxed">{review.comment}</p>
                 
                 {review.photo && (
@@ -299,7 +411,29 @@ const AllReviewsClient = ({reviewsData}) => {
               </div>
             </div>
             
-            <div className="flex items-center justify-end pt-4 border-t border-gray-200">
+            <div className="flex items-center justify-end gap-2 pt-4 border-t border-gray-200">
+              {/* Approve/Reject Buttons */}
+              {review.isApproved === false ? (
+                <button 
+                  onClick={() => handleApproveReview(review)}
+                  disabled={approvingReviewId === (review._id || review.id)}
+                  className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm disabled:opacity-50"
+                >
+                  <Check size={14} className={approvingReviewId === (review._id || review.id) ? 'animate-spin' : ''} />
+                  <span>{approvingReviewId === (review._id || review.id) ? 'Approving...' : 'Approve'}</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => handleRejectReview(review)}
+                  disabled={rejectingReviewId === (review._id || review.id)}
+                  className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors text-sm disabled:opacity-50"
+                >
+                  <XCircle size={14} className={rejectingReviewId === (review._id || review.id) ? 'animate-spin' : ''} />
+                  <span>{rejectingReviewId === (review._id || review.id) ? 'Rejecting...' : 'Unapprove'}</span>
+                </button>
+              )}
+              
+              {/* Delete Button */}
               <button 
                 onClick={() => handleDeleteClick(review)}
                 disabled={deletingReviewId === (review._id || review.id)}

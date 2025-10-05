@@ -4,21 +4,21 @@ import React, { useMemo } from 'react';
 import ReviewClient from './ReviewClient';
 
 export default function Review({ reviewsData }) {
-  // Process real reviews data
+  // Process real reviews data - only approved reviews
   const customerReviews = useMemo(() => {
     if (!Array.isArray(reviewsData) || reviewsData.length === 0) {
       // Return empty array if no real reviews exist - component will handle empty state
       return [];
     }
 
-    // Map real reviews to expected format
+    // Map real approved reviews to expected format
     return reviewsData
-      .filter(review => review.rating && review.rating >= 4) // Only show good reviews on homepage
+      .filter(review => review.isApproved === true && review.rating && review.rating >= 4) // Only show approved good reviews on homepage
       .slice(0, 8) // Limit to 8 reviews for performance
       .map((review, index) => ({
         id: review._id || `review-${index}`,
         name: review.userName || review.customerName || review.name || `Customer ${index + 1}`,
-        avatar: review.avatar || review.userAvatar || `https://ui-avatars.com/api/?name=Customer+${index + 1}&size=150&background=f3f4f6&color=374151`,
+        avatar: review.avatar || review.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.userName || 'Customer')}&size=150&background=f3f4f6&color=374151`,
         rating: review.rating || 5,
         title: review.title || review.subject || "Great Product!",
         comment: review.comment || review.review || review.description || "Excellent experience with this product!",

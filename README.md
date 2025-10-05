@@ -426,12 +426,23 @@ Contributions are welcome! Please follow these steps:
 
 ## 📝 Documentation
 
+All detailed documentation has been organized in the `/docs` folder:
+
+### 📂 Main Documentation
 - [Environment Configuration Guide](ENVIRONMENT_CONFIG_GUIDE.md)
 - [API Security Documentation](API_SECURITY.md)
 - [Backend Routes Reference](BACKEND_ROUTES_README.md)
 - [Quick Deploy Guide](QUICK_DEPLOY_GUIDE.md)
 - [Production Readiness Checklist](PRODUCTION_READINESS.md)
-- [Sign In Fix Summary](SIGN_IN_FIX_SUMMARY.md)
+
+### 📂 Technical Documentation (in `/docs` folder)
+- **Camera Conversion** - [CAMERA_CONVERSION_SUMMARY.md](docs/CAMERA_CONVERSION_SUMMARY.md)
+- **Performance Optimization** - [PERFORMANCE_OPTIMIZATION_COMPLETE.md](docs/PERFORMANCE_OPTIMIZATION_COMPLETE.md)
+- **Performance Quick Reference** - [PERFORMANCE_QUICK_REFERENCE.md](docs/PERFORMANCE_QUICK_REFERENCE.md)
+- **Product Schema Documentation** - [PRODUCT_SCHEMA_DOCUMENTATION.md](docs/PRODUCT_SCHEMA_DOCUMENTATION.md)
+- **Products Page Fix** - [PRODUCTS_PAGE_FIX.md](docs/PRODUCTS_PAGE_FIX.md)
+- **Code Cleanup Summary** - [CODE_CLEANUP_SUMMARY.md](docs/CODE_CLEANUP_SUMMARY.md)
+- **Optimization Summary** - [OPTIMIZATION_SUMMARY.md](docs/OPTIMIZATION_SUMMARY.md)
 
 ---
 

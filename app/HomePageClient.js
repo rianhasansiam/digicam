@@ -23,7 +23,7 @@ export default function HomePageClient() {
 
   const { data: reviewsData, isLoading: reviewsLoading, error: reviewsError } = useGetData({
     name: 'reviews', // Standardized query key
-    api: '/api/reviews',
+    api: '/api/reviews?approved=true', // 🚀 OPTIMIZED: Only fetch approved reviews
     cacheType: 'DYNAMIC'
   });
 

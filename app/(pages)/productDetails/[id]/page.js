@@ -12,6 +12,7 @@ import { Star, StarIcon, ThumbsUp, ShieldCheck, Clock, User, MessageSquare, Hear
 import LoadingSpinner from '../../../componets/loading/LoadingSpinner';
 import { TextSkeleton } from '../../../componets/loading/SkeletonLoaders';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReviewForm from '../components/ReviewForm';
 
 // Optimized Image component with error handling
 const OptimizedImage = ({ src, alt, className, width, height, ...props }) => {
@@ -89,6 +90,7 @@ export default function ProductDetailPage({ params }) {
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
   const [isPaused, setIsPaused] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
   const scrollContainerRef = useRef(null);
   
   // Fetch all products using real API
@@ -98,16 +100,16 @@ export default function ProductDetailPage({ params }) {
   });
 
   // Fetch reviews for this product
-  const { data: allReviews, isLoading: reviewsLoading } = useGetData({
+  const { data: allReviews, isLoading: reviewsLoading, refetch: refetchReviews } = useGetData({
     name: 'reviews',
-    api: '/api/reviews'
+    api: `/api/reviews?productId=${productId}`
   });
 
   // Find the specific product by ID from real database (handle both _id and id)
   const product = products?.find(p => p._id === productId || p.id === productId);
   
-  // Filter reviews for this specific product
-  const productReviews = allReviews?.filter(review => review.productId === productId) || [];
+  // Filter reviews for this specific product - now done server-side via query param
+  const productReviews = allReviews || [];
 
   // Local Storage utility functions
   const getCartFromStorage = () => {
@@ -997,13 +999,29 @@ export default function ProductDetailPage({ params }) {
                 </div>
                 <h4 className="text-2xl font-medium text-gray-900 mb-3">No Reviews Yet</h4>
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">Be the first to share your thoughts about this product and help other customers make informed decisions!</p>
-                <button className="inline-flex items-center space-x-2 px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors shadow-lg">
+                <button 
+                  onClick={() => setShowReviewForm(true)}
+                  className="inline-flex items-center space-x-2 px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-medium rounded-xl transition-colors shadow-lg"
+                >
                   <Star size={20} />
                   <span>Write a Review</span>
                 </button>
               </div>
             )}
           </div>
+
+          {/* Write Review Button - Show when there are reviews */}
+          {productReviews.length > 0 && (
+            <div className="text-center mt-12">
+              <button
+                onClick={() => setShowReviewForm(true)}
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-black hover:bg-gray-800 text-white font-medium rounded-xl transition-colors shadow-lg"
+              >
+                <Star size={20} />
+                <span>Write Your Review</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -1029,6 +1047,52 @@ export default function ProductDetailPage({ params }) {
                 </button>
               </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Review Form Modal */}
+      <AnimatePresence>
+        {showReviewForm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowReviewForm(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+                <h3 className="text-xl font-bold text-gray-900">Write a Review</h3>
+                <button
+                  onClick={() => setShowReviewForm(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-6">
+                <ReviewForm
+                  productId={productId}
+                  productName={product?.name || 'Product'}
+                  onClose={() => setShowReviewForm(false)}
+                  onSuccess={() => {
+                    refetchReviews();
+                    setToast({
+                      show: true,
+                      type: 'success',
+                      message: 'Review submitted successfully! Pending approval.'
+                    });
+                  }}
+                />
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
