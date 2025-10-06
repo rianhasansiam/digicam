@@ -9,15 +9,20 @@ import AuthProvider from "../lib/AuthProvider";
 import ReactQueryProvider from "@/lib/ReactQueryProvider";
 import { LoadingProvider } from "../lib/LoadingProvider";
 import CustomerChatButton from "./componets/chat/CustomerChatButton";
+import SkipNavigation from "./componets/shared/SkipNavigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap',
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata = {
@@ -32,7 +37,7 @@ export const metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://digicam.com'),
+  metadataBase: new URL('https://digicammarket.com'),
   alternates: {
     canonical: '/',
   },
@@ -63,9 +68,10 @@ export default function RootLayout({ children }) {
           <StoreProvider>
             <ReactQueryProvider>
               <LoadingProvider>
+                <SkipNavigation />
                 <div className="flex flex-col min-h-screen bg-white text-black">
                   <Navbar />
-                  <main className="flex-grow">
+                  <main id="main-content" className="flex-grow" tabIndex={-1}>
                     {children}
                   </main>
                   <Footer />

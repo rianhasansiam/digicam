@@ -6,6 +6,7 @@ import Hero from './componets/hero/Hero';
 import Category from './componets/category/Category';
 import FeaturedProducts from './componets/featuredProducts/FeaturedProducts';
 import Review from './componets/review/Review';
+import StructuredData, { MultipleStructuredData } from './componets/shared/StructuredData';
 
 export default function HomePageClient() {
   // 🚀 OPTIMIZED: Use standardized query keys for data deduplication
@@ -66,15 +67,48 @@ export default function HomePageClient() {
 
   // All data loaded - render all components together with opacity animation
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 opacity-0 animate-fadeIn">
-      <Hero 
-        productsData={productsData} 
-        usersData={usersData} 
-        reviewsData={reviewsData} 
-      />
-      <Category categoriesData={categoriesData} />
-      <FeaturedProducts productsData={productsData} />
-      <Review reviewsData={reviewsData} />
-    </div>
+    <>
+      {/* SEO: Structured Data for Homepage */}
+      <MultipleStructuredData items={[
+        {
+          type: 'organization',
+          data: {
+            name: 'DigiCam',
+            url: 'https://digicammarket.com',
+            logo: 'https://digicammarket.com/logo.png',
+            description: 'Premium camera store offering professional photography equipment and accessories',
+            phone: '+1-800-DIGICAM',
+            socialMedia: [
+              'https://facebook.com/digicam',
+              'https://twitter.com/digicam',
+              'https://instagram.com/digicam'
+            ]
+          }
+        },
+        {
+          type: 'website',
+          data: {
+            name: 'DigiCam - Premium Camera Store',
+            url: 'https://digicammarket.com',
+            description: 'Discover professional cameras, lenses, and photography equipment. Quality gear for photographers of all levels.'
+          }
+        },
+        {
+          type: 'ecommerce',
+          data: {}
+        }
+      ]} />
+
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 opacity-0 animate-fadeIn">
+        <Hero 
+          productsData={productsData} 
+          usersData={usersData} 
+          reviewsData={reviewsData} 
+        />
+        <Category categoriesData={categoriesData} />
+        <FeaturedProducts productsData={productsData} />
+        <Review reviewsData={reviewsData} />
+      </div>
+    </>
   );
 }

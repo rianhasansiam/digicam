@@ -48,6 +48,7 @@ const FeaturedProductsClient = memo(({ products = [] }) => {
                 <ProductCard 
                   product={product}
                   variant="featured"
+                  priority={index < 4}
                 />
               </motion.div>
             ))}

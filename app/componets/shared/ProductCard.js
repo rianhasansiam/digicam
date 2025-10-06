@@ -24,7 +24,7 @@ const Badge = memo(({ children, className, variant = 'default' }) => {
 Badge.displayName = 'Badge';
 
 // Optimized Image with fallback
-const OptimizedImage = memo(({ src, alt, className, ...props }) => {
+const OptimizedImage = memo(({ src, alt, className, priority = false, ...props }) => {
   // Use a data URL for placeholder to avoid optimization issues
   const fallbackSrc = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDQwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjZjNmNGY2Ii8+CjxyZWN0IHg9IjE1MCIgeT0iMTUwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjEwIiBmaWxsPSIjOWNhM2FmIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjQwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UHJvZHVjdDwvdGV4dD4KPC9zdmc+';
   const initialSrc = src && src.trim() ? src : fallbackSrc;
@@ -51,6 +51,9 @@ const OptimizedImage = memo(({ src, alt, className, ...props }) => {
       className={className}
       onError={handleError}
       unoptimized={shouldUnoptimize}
+      priority={priority}
+      quality={85}
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
       {...props}
     />
   );
@@ -63,7 +66,8 @@ const ProductCard = memo(({
   product, 
   onProductClick,
   onAddToCart,
-  variant = 'default' // 'default', 'featured'
+  variant = 'default', // 'default', 'featured'
+  priority = false // For image priority loading (LCP optimization)
 }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -157,6 +161,7 @@ const ProductCard = memo(({
           src={product.primaryImage || product.imageUrl || product.image}
           alt={product.name || 'Product'}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          priority={priority}
         />
         
         {/* Discount Badge */}

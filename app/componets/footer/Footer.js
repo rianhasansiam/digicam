@@ -42,6 +42,7 @@ export default function Footer() {
                     className="bg-white hover:bg-gray-200 hover:text-black transition-all mr-3 w-7 h-7 rounded-full border border-white/20 flex items-center justify-center p-1.5 text-black"
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`Follow us on ${social.name}`}
                   >
                     {social.icon}
                   </Link>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGetData } from '../../../lib/hooks/useGetData';
 import { 
@@ -21,18 +22,48 @@ import {
   Mail,
   MessageCircle
 } from 'lucide-react';
+import LoadingSpinner from '../../componets/loading/LoadingSpinner';
 
-// Import admin components directly (no wrapper layers)
-import Dashboard from './adminComponents/dashboard/Dashboard';
-import AllProductsClient from './adminComponents/allProducts/AllProductsClient';
-import AllUsersClient from './adminComponents/allUsers/AllUsersClient';
-import OrderDetails from './adminComponents/orderDetails/OrderDetails';
-import AllReviews from './adminComponents/allReviews/AllReviews';
-import AllCuponsClient from './adminComponents/allCupons/AllCuponsClient';
-import AllCategoryClient from './adminComponents/allCategory/AllCategoryClient';
-import ShippingTaxSettings from './adminComponents/shippingTax/ShippingTaxSettings';
-import AllMessages from './adminComponents/allMessages/AllMessages';
-import AdminChatPanel from './adminComponents/AdminChatPanel';
+// 🚀 PERFORMANCE: Dynamic imports for admin components (code splitting)
+const Dashboard = dynamic(() => import('./adminComponents/dashboard/Dashboard'), {
+  loading: () => <LoadingSpinner message="Loading Dashboard..." />
+});
+
+const AllProductsClient = dynamic(() => import('./adminComponents/allProducts/AllProductsClient'), {
+  loading: () => <LoadingSpinner message="Loading Products..." />
+});
+
+const AllUsersClient = dynamic(() => import('./adminComponents/allUsers/AllUsersClient'), {
+  loading: () => <LoadingSpinner message="Loading Users..." />
+});
+
+const OrderDetails = dynamic(() => import('./adminComponents/orderDetails/OrderDetails'), {
+  loading: () => <LoadingSpinner message="Loading Orders..." />
+});
+
+const AllReviews = dynamic(() => import('./adminComponents/allReviews/AllReviews'), {
+  loading: () => <LoadingSpinner message="Loading Reviews..." />
+});
+
+const AllCuponsClient = dynamic(() => import('./adminComponents/allCupons/AllCuponsClient'), {
+  loading: () => <LoadingSpinner message="Loading Coupons..." />
+});
+
+const AllCategoryClient = dynamic(() => import('./adminComponents/allCategory/AllCategoryClient'), {
+  loading: () => <LoadingSpinner message="Loading Categories..." />
+});
+
+const ShippingTaxSettings = dynamic(() => import('./adminComponents/shippingTax/ShippingTaxSettings'), {
+  loading: () => <LoadingSpinner message="Loading Settings..." />
+});
+
+const AllMessages = dynamic(() => import('./adminComponents/allMessages/AllMessages'), {
+  loading: () => <LoadingSpinner message="Loading Messages..." />
+});
+
+const AdminChatPanel = dynamic(() => import('./adminComponents/AdminChatPanel'), {
+  loading: () => <LoadingSpinner message="Loading Chat..." />
+});
 
 
 const AdminPageClient = ({ adminData, navigationItems }) => {
@@ -45,8 +76,15 @@ const { data: users = [], isLoading: usersLoading } = useGetData({ name: 'users'
 const { data: orders = [], isLoading: ordersLoading } = useGetData({ name: 'orders', api: '/api/orders', cacheType: 'DYNAMIC' });
 const { data: reviews = [], isLoading: reviewsLoading } = useGetData({ name: 'reviews', api: '/api/reviews', cacheType: 'DYNAMIC' });
   
+  // Fetch business tracking data
+  const { data: businessTracking = { totalRevenue: 0, totalInvestment: 0, entries: [] }, isLoading: businessLoading, refetch: refetchBusiness } = useGetData({ 
+    name: 'business-tracking', 
+    api: '/api/business-tracking', 
+    cacheType: 'DYNAMIC' 
+  });
+  
   // Shared loading state
-  const isLoading = productsLoading || usersLoading || ordersLoading || reviewsLoading;
+  const isLoading = productsLoading || usersLoading || ordersLoading || reviewsLoading || businessLoading;
   
   // Shared data object to pass to components
   const sharedData = {
@@ -54,6 +92,8 @@ const { data: reviews = [], isLoading: reviewsLoading } = useGetData({ name: 're
     users, 
     orders,
     reviews,
+    businessTracking,
+    refetchBusiness,
     isLoading
   };
 

@@ -29,7 +29,7 @@ app.prepare().then(() => {
     cors: {
       origin: dev 
         ? ['http://localhost:3000', 'http://127.0.0.1:3000']
-  : 'https://digicam.com',
+  : 'https://digicammarket.com',
       methods: ['GET', 'POST']
     }
   });

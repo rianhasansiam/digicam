@@ -13,9 +13,10 @@ import LoadingSpinner from '../../../componets/loading/LoadingSpinner';
 import { TextSkeleton } from '../../../componets/loading/SkeletonLoaders';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReviewForm from '../components/ReviewForm';
+import StructuredData, { MultipleStructuredData } from '../../../componets/shared/StructuredData';
 
 // Optimized Image component with error handling
-const OptimizedImage = ({ src, alt, className, width, height, ...props }) => {
+const OptimizedImage = ({ src, alt, className, width, height, priority = false, ...props }) => {
   const fallbackSrc = PLACEHOLDER_IMAGES.PRODUCT_LARGE;
   
   // Validate and clean the image URL
@@ -307,23 +308,60 @@ export default function ProductDetailPage({ params }) {
     );
   }
 
+  // Calculate average rating from product reviews
+  const avgRating = productReviews.length > 0 
+    ? (productReviews.reduce((sum, review) => sum + review.rating, 0) / productReviews.length).toFixed(1)
+    : 0;
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8 bg-white shadow-sm">
-      {/* Breadcrumb */}
-      <nav className="mb-8">
-        <div className="flex items-center space-x-2 text-sm">
-          <Link href="/" className="text-gray-500 hover:text-gray-700 transition-colors">
-            Home
-          </Link>
-          <span className="text-gray-400">→</span>
-          <Link href="/allProducts" className="text-gray-500 hover:text-gray-700 transition-colors">
-            Products
-          </Link>
-          <span className="text-gray-400">→</span>
-          <span className="text-gray-900 font-medium">{product.name || product.title}</span>
-        </div>
-      </nav>
+    <>
+      {/* Structured Data for SEO */}
+      <MultipleStructuredData 
+        items={[
+          {
+            type: 'product',
+            data: {
+              name: product.name || product.title,
+              description: product.description,
+              image: product.images?.[0] || product.primaryImage || product.image,
+              price: product.price,
+              currency: 'USD',
+              brand: product.category || 'DigiCam',
+              sku: product._id,
+              stock: product.stock,
+              rating: avgRating,
+              reviewCount: productReviews.length
+            }
+          },
+          {
+            type: 'breadcrumb',
+            data: {
+              items: [
+                { name: 'Home', url: '/' },
+                { name: 'Products', url: '/allProducts' },
+                { name: product.name || product.title, url: `/productDetails/${product._id}` }
+              ]
+            }
+          }
+        ]}
+      />
+      
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8 bg-white shadow-sm">
+        {/* Breadcrumb */}
+        <nav className="mb-8">
+          <div className="flex items-center space-x-2 text-sm">
+            <Link href="/" className="text-gray-500 hover:text-gray-700 transition-colors">
+              Home
+            </Link>
+            <span className="text-gray-400">→</span>
+            <Link href="/allProducts" className="text-gray-500 hover:text-gray-700 transition-colors">
+              Products
+            </Link>
+            <span className="text-gray-400">→</span>
+            <span className="text-gray-900 font-medium">{product.name || product.title}</span>
+          </div>
+        </nav>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         {/* Product Images */}
@@ -337,6 +375,7 @@ export default function ProductDetailPage({ params }) {
               height={600}
               className="w-full h-full object-cover transition-opacity duration-300"
               key={selectedImageIndex}
+              priority={true}
             />
           </div>
           
@@ -1097,5 +1136,6 @@ export default function ProductDetailPage({ params }) {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }

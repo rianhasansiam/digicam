@@ -26,7 +26,10 @@ const CardsClient = memo(({ products = [] }) => {
             whileHover={{ y: -3 }}
             className="group"
           >
-            <ProductCard product={product} />
+            <ProductCard 
+              product={product}
+              priority={index < 4}
+            />
           </motion.div>
         ))}
       </div>

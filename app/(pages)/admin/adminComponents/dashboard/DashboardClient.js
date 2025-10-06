@@ -1,7 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import axios from 'axios';
+import Toast from './Toast';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -15,7 +18,10 @@ import {
   Calendar,
   BarChart3,
   PieChart,
-  Activity
+  Activity,
+  Plus,
+  X,
+  Trash2
 } from 'lucide-react';
 
 // StatCard Component
@@ -43,9 +49,181 @@ const StatCard = ({ title, value, change, trend, icon: Icon, color = "gray" }) =
   </motion.div>
 );
 
-const DashboardClient = ({ analytics }) => {
+const DashboardClient = ({ analytics, businessTracking, refetchBusiness }) => {
+  const [showRevenueModal, setShowRevenueModal] = useState(false);
+  const [showInvestmentModal, setShowInvestmentModal] = useState(false);
+  const [showRevenueDetails, setShowRevenueDetails] = useState(false);
+  const [showInvestmentDetails, setShowInvestmentDetails] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
+  const [formData, setFormData] = useState({
+    amount: '',
+    description: '',
+    date: new Date().toISOString().split('T')[0]
+  });
+
+  const handleAddEntry = async (type) => {
+    if (!formData.amount || !formData.description) {
+      setToast({
+        show: true,
+        type: 'error',
+        message: 'Please fill in all fields'
+      });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const response = await axios.post('/api/business-tracking', {
+        type,
+        amount: parseFloat(formData.amount),
+        description: formData.description,
+        date: formData.date
+      });
+
+      // Reset form and close modal
+      setFormData({ amount: '', description: '', date: new Date().toISOString().split('T')[0] });
+      setShowRevenueModal(false);
+      setShowInvestmentModal(false);
+      
+      // Show success message
+      setToast({
+        show: true,
+        type: 'success',
+        message: response.data.message || `${type === 'revenue' ? 'Revenue' : 'Investment'} added successfully!`
+      });
+      
+      // Refetch data
+      if (refetchBusiness) {
+        setTimeout(() => refetchBusiness(), 500);
+      }
+    } catch (error) {
+      console.error('Error adding entry:', error);
+      console.error('Error response:', error.response?.data);
+      setToast({
+        show: true,
+        type: 'error',
+        message: error.response?.data?.error || 'Failed to add entry. Please try again.'
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Revenue Modal */}
+      {showRevenueModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-6 max-w-md w-full"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Add Revenue</h3>
+              <button onClick={() => setShowRevenueModal(false)} className="text-gray-500 hover:text-gray-700">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Amount (৳)</label>
+                <input
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="Enter amount"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <input
+                  type="text"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="e.g., Product sales"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                <input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                />
+              </div>
+              <button
+                onClick={() => handleAddEntry('revenue')}
+                disabled={submitting}
+                className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
+              >
+                {submitting ? 'Adding...' : 'Add Revenue'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Investment Modal */}
+      {showInvestmentModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-6 max-w-md w-full"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-gray-900">Add Investment</h3>
+              <button onClick={() => setShowInvestmentModal(false)} className="text-gray-500 hover:text-gray-700">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Amount (৳)</label>
+                <input
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter amount"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <input
+                  type="text"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="e.g., New equipment"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                <input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <button
+                onClick={() => handleAddEntry('investment')}
+                disabled={submitting}
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50"
+              >
+                {submitting ? 'Adding...' : 'Add Investment'}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       {/* Welcome Banner */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -100,6 +278,77 @@ const DashboardClient = ({ analytics }) => {
           icon={Star}
           color="gray"
         />
+      </div>
+
+      {/* Business Tracking Cards - Revenue & Investment */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* Revenue Card */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow"
+        >
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <p className="text-green-100 text-sm font-medium mb-1">Total Revenue</p>
+              <p className="text-4xl font-bold">৳{businessTracking?.totalRevenue?.toFixed(2) || '0.00'}</p>
+              <p className="text-green-100 text-xs mt-1">{businessTracking?.entries?.filter(e => e.type === 'revenue').length || 0} entries</p>
+            </div>
+            <div className="bg-white/20 p-3 rounded-xl">
+              <TrendingUp size={28} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setShowRevenueModal(true)}
+              className="bg-white/20 hover:bg-white/30 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+            >
+              <Plus size={18} />
+              Add
+            </button>
+            <button
+              onClick={() => setShowRevenueDetails(true)}
+              className="bg-white/20 hover:bg-white/30 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+            >
+              <Eye size={18} />
+              View
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Investment Card */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-shadow"
+        >
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <p className="text-blue-100 text-sm font-medium mb-1">Total Investment</p>
+              <p className="text-4xl font-bold">৳{businessTracking?.totalInvestment?.toFixed(2) || '0.00'}</p>
+              <p className="text-blue-100 text-xs mt-1">{businessTracking?.entries?.filter(e => e.type === 'investment').length || 0} entries</p>
+            </div>
+            <div className="bg-white/20 p-3 rounded-xl">
+              <DollarSign size={28} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setShowInvestmentModal(true)}
+              className="bg-white/20 hover:bg-white/30 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+            >
+              <Plus size={18} />
+              Add
+            </button>
+            <button
+              onClick={() => setShowInvestmentDetails(true)}
+              className="bg-white/20 hover:bg-white/30 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+            >
+              <Eye size={18} />
+              View
+            </button>
+          </div>
+        </motion.div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
@@ -251,6 +500,172 @@ const DashboardClient = ({ analytics }) => {
           </button>
         </div>
       </motion.div>
+
+      {/* Revenue Details Modal */}
+      {showRevenueDetails && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8"
+          >
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-white pb-4 border-b">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Revenue Details</h3>
+                <p className="text-gray-600 text-sm mt-1">
+                  Total: ৳{businessTracking?.totalRevenue?.toFixed(2) || '0.00'} • {businessTracking?.entries?.filter(e => e.type === 'revenue').length || 0} entries
+                </p>
+              </div>
+              <button
+                onClick={() => setShowRevenueDetails(false)}
+                className="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {businessTracking?.entries?.filter(e => e.type === 'revenue').length > 0 ? (
+                businessTracking.entries
+                  .filter(e => e.type === 'revenue')
+                  .map((entry, index) => (
+                    <motion.div
+                      key={entry._id || index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-xl p-4 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-start gap-3">
+                            <div className="bg-green-500 text-white p-2 rounded-lg">
+                              <TrendingUp size={20} />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-900 text-lg">
+                                ৳{parseFloat(entry.amount).toFixed(2)}
+                              </h4>
+                              <p className="text-gray-700 mt-1">{entry.description}</p>
+                              <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                                <span className="flex items-center gap-1">
+                                  <Calendar size={14} />
+                                  {new Date(entry.date).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                  })}
+                                </span>
+                                {entry.createdBy && (
+                                  <span className="text-xs bg-green-200 px-2 py-1 rounded">
+                                    {entry.createdBy}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))
+              ) : (
+                <div className="text-center py-12">
+                  <TrendingUp size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500 text-lg">No revenue entries yet</p>
+                  <p className="text-gray-400 text-sm mt-2">Click &quot;Add&quot; to create your first revenue entry</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Investment Details Modal */}
+      {showInvestmentDetails && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto my-8"
+          >
+            <div className="flex justify-between items-center mb-6 sticky top-0 bg-white pb-4 border-b">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Investment Details</h3>
+                <p className="text-gray-600 text-sm mt-1">
+                  Total: ৳{businessTracking?.totalInvestment?.toFixed(2) || '0.00'} • {businessTracking?.entries?.filter(e => e.type === 'investment').length || 0} entries
+                </p>
+              </div>
+              <button
+                onClick={() => setShowInvestmentDetails(false)}
+                className="text-gray-500 hover:text-gray-700 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {businessTracking?.entries?.filter(e => e.type === 'investment').length > 0 ? (
+                businessTracking.entries
+                  .filter(e => e.type === 'investment')
+                  .map((entry, index) => (
+                    <motion.div
+                      key={entry._id || index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-4 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-start gap-3">
+                            <div className="bg-blue-500 text-white p-2 rounded-lg">
+                              <DollarSign size={20} />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-gray-900 text-lg">
+                                ৳{parseFloat(entry.amount).toFixed(2)}
+                              </h4>
+                              <p className="text-gray-700 mt-1">{entry.description}</p>
+                              <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                                <span className="flex items-center gap-1">
+                                  <Calendar size={14} />
+                                  {new Date(entry.date).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                  })}
+                                </span>
+                                {entry.createdBy && (
+                                  <span className="text-xs bg-blue-200 px-2 py-1 rounded">
+                                    {entry.createdBy}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))
+              ) : (
+                <div className="text-center py-12">
+                  <DollarSign size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500 text-lg">No investment entries yet</p>
+                  <p className="text-gray-400 text-sm mt-2">Click &quot;Add&quot; to create your first investment entry</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Toast Notifications */}
+      <Toast
+        type={toast.type}
+        message={toast.message}
+        isVisible={toast.show}
+        onClose={() => setToast({ ...toast, show: false })}
+      />
     </div>
   );
 };

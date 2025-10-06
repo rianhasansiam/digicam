@@ -5,7 +5,7 @@ import DashboardClient from './DashboardClient';
 import { PLACEHOLDER_IMAGES } from '@/lib/constants';
 
 // Client Component - Handles real data processing from props
-const Dashboard = ({ products = [], users = [], orders = [], reviews = [], isLoading }) => {
+const Dashboard = ({ products = [], users = [], orders = [], reviews = [], isLoading, businessTracking, refetchBusiness }) => {
   // Calculate real analytics from database data
   const analytics = useMemo(() => {
     const allProducts = Array.isArray(products) ? products : [];
@@ -193,7 +193,7 @@ const Dashboard = ({ products = [], users = [], orders = [], reviews = [], isLoa
   }, [products, users, orders, reviews]);
 
   // Pass real data to client component
-  return <DashboardClient analytics={analytics} />;
+  return <DashboardClient analytics={analytics} businessTracking={businessTracking} refetchBusiness={refetchBusiness} />;
 };
 
 export default Dashboard;

@@ -46,6 +46,7 @@ export const socialsData = [
   
   {
     id: 2,
+    name: "Facebook",
     icon: (
       <svg
         className="w-full h-full"
@@ -60,6 +61,7 @@ export const socialsData = [
 
   {
     id: 4,
+    name: "Instagram",
     icon: (
       <svg
         className="w-full h-full"
@@ -74,6 +76,7 @@ export const socialsData = [
 
   {
     id: 5,
+    name: "WhatsApp",
     icon: (
       <svg
         className="w-full h-full"

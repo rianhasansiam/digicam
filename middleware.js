@@ -17,14 +17,14 @@ export function middleware(request) {
     // Allowed origins based on environment
     const allowedOrigins = isDevelopment
       ? [
-          'https://digicam.com',
-          'https://www.digicam.com',
+          'https://digicammarket.com',
+          'https://www.digicammarket.com',
           'http://localhost:3000',
           'http://localhost:3001',
         ]
       : [
-          'https://digicam.com',
-          'https://www.digicam.com',
+          'https://digicammarket.com',
+          'https://www.digicammarket.com',
         ];
 
     // Check if origin is allowed

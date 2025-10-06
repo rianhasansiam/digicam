@@ -19,7 +19,7 @@ export async function generateMetadata() {
         title: "Digicam - Premium Camera Store",
         description: `Discover ${homeData.stats.totalProducts} professional cameras with ${homeData.stats.averageRating.toFixed(1)}-star quality rating.`,
         type: "website",
-        url: "https://digicam.com",
+        url: "https://digicammarket.com",
         images: [
           {
             url: homeData.featuredProducts?.[0]?.primaryImage || "/hero.jpg",
@@ -46,7 +46,7 @@ export async function generateMetadata() {
         title: "Digicam - Premium Camera Store",
         description: "Discover professional cameras and photography equipment at Digicam. Quality cameras for photographers of all levels.",
         type: "website",
-        url: "https://digicam.com",
+        url: "https://digicammarket.com",
         images: [
           {
             url: "/hero.jpg",

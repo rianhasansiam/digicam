@@ -46,6 +46,8 @@ export default function CategoryClient({ categories = [] }) {
                 height={96}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 unoptimized={category.image?.startsWith('http') && (category.image.includes('ibb.co') || category.image.includes('imagebb'))}
+                priority={index < 6}
+                quality={85}
               />
             </div>
             <h3 className="font-semibold text-sm md:text-base text-black group-hover:text-gray-600 transition-colors">
