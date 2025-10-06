@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useInView } from 'framer-motion';
-import { Heart, Leaf, Users, Award, Globe, Sparkles, Linkedin, Instagram, Twitter, ArrowRight, ExternalLink, Calendar, Trophy } from 'lucide-react';
+import { Camera, Aperture, Eye, Award, Globe, Sparkles, Linkedin, Instagram, Twitter, ArrowRight, ExternalLink, Calendar, Trophy, ShieldCheck, Users, Zap } from 'lucide-react';
 import { useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,9 +11,9 @@ const AboutPageClient = ({ aboutData }) => {
   // Icon mapping function
   const getIcon = (iconName) => {
     const icons = {
-      Heart,
-      Leaf,
-      Users,
+      Camera,
+      Aperture,
+      Eye,
       Award,
       Globe,
       Sparkles,
@@ -21,9 +21,12 @@ const AboutPageClient = ({ aboutData }) => {
       Instagram,
       Twitter,
       Calendar,
-      Trophy
+      Trophy,
+      ShieldCheck,
+      Users,
+      Zap
     };
-    return icons[iconName] || Heart;
+    return icons[iconName] || Camera;
   };
 
   // Animation variants

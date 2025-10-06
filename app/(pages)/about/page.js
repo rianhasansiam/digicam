@@ -2,19 +2,19 @@ import AboutPageClient from './AboutPageClient';
 
 // Metadata for SEO
 export const metadata = {
-  title: "About Us - Digicam | Premium Fashion Brand Story",
-  description: "Discover the story behind Digicam and our commitment to premium fashion. Learn about our journey, values, and team since 2018.",
-  keywords: "about Digicam, fashion brand story, premium clothing company, fashion team, company history",
+  title: "About Us - Digicam | Professional Camera Store Since 2025",
+  description: "Discover the story behind Digicam and our commitment to professional photography equipment. Learn about our journey, values, and expertise since 2025.",
+  keywords: "about Digicam, camera store, photography equipment, professional cameras, camera shop history, DSLR store",
   openGraph: {
-  title: "About Us - Digicam | Premium Fashion Brand",
-  description: "Discover the story behind Digicam and our commitment to premium fashion.",
+    title: "About Us - Digicam | Professional Camera Store",
+    description: "Discover the story behind Digicam and our commitment to professional photography equipment.",
     type: "website",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
+        url: "https://images.unsplash.com/photo-1606240724602-5b21f896eae8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
         width: 1200,
         height: 630,
-  alt: "Digicam About Us"
+        alt: "Digicam Camera Store"
       }
     ]
   },
@@ -29,20 +29,20 @@ export default function AboutPage() {
   const aboutData = {
     hero: {
       title: "About Digicam",
-      subtitle: "Premium Fashion Since 2018",
-      description: "We create fashion that empowers individuals to express their unique style with confidence.",
-      backgroundImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+      subtitle: "Professional Photography Equipment Since 2025",
+      description: "We empower photographers to capture their vision with premium cameras and expert guidance.",
+      backgroundImage: "https://images.unsplash.com/photo-1606240724602-5b21f896eae8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
     },
     
     story: {
       title: "Our Story",
-      subtitle: "A Journey of Fashion Excellence",
+      subtitle: "A Journey of Photography Excellence",
       content: [
-  "Digicam was founded in 2018 with a vision to create premium fashion that's accessible to everyone. We believe that quality clothing should empower confidence and self-expression.",
-        "Our journey began with a simple idea: fashion should be both beautiful and meaningful. Every piece we create tells a story of craftsmanship, attention to detail, and dedication to excellence.",
-        "Today, we continue to push boundaries in fashion while staying true to our core values of quality, sustainability, and customer satisfaction."
+        "Digicam was founded in 2025 with a vision to provide professional photography equipment that's accessible to everyone. We believe that quality cameras and expert guidance should empower every photographer's creative vision.",
+        "Our journey began with a passion for photography and a commitment to helping others capture their perfect moments. From DSLR cameras to mirrorless systems, lenses, and accessories, we carefully curate each product with attention to detail and dedication to excellence.",
+        "Today, we continue to grow as Bangladesh's trusted camera retailer while staying true to our core values of quality products, expert knowledge, and exceptional customer service."
       ],
-      image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
+      image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
     },
     
     mission: {
@@ -50,19 +50,34 @@ export default function AboutPage() {
       subtitle: "What Drives Us Forward",
       values: [
         {
-          iconName: "Heart",
-          title: "Quality First",
-          description: "We use only the finest materials and expert craftsmanship."
+          iconName: "Camera",
+          title: "Premium Quality",
+          description: "We offer only authentic cameras and equipment from trusted brands like Canon, Nikon, Sony, and Fujifilm."
         },
         {
-          iconName: "Leaf",
-          title: "Sustainable Fashion", 
-          description: "Committed to ethical practices and environmental responsibility."
+          iconName: "ShieldCheck",
+          title: "Expert Guidance", 
+          description: "Our knowledgeable team provides personalized advice to help you choose the perfect camera for your needs."
         },
         {
           iconName: "Users",
           title: "Customer Focus",
-          description: "Your satisfaction and style are our top priorities."
+          description: "Your photography journey and satisfaction are our top priorities. We're here to support you every step of the way."
+        },
+        {
+          iconName: "Zap",
+          title: "Fast & Reliable",
+          description: "Quick delivery, hassle-free returns, and responsive customer service ensure a smooth shopping experience."
+        },
+        {
+          iconName: "Eye",
+          title: "Photography Passion",
+          description: "We're photographers ourselves, passionate about helping you capture life's precious moments perfectly."
+        },
+        {
+          iconName: "Aperture",
+          title: "Latest Technology",
+          description: "Stay ahead with the newest camera models, lenses, and photography accessories as soon as they launch."
         }
       ]
     },
@@ -112,57 +127,74 @@ export default function AboutPage() {
       subtitle: "Milestones that Define Our Success",
       achievements: [
         {
-          number: "50K+",
-          label: "Happy Customers",
-          description: "Satisfied customers worldwide"
+          number: "15K+",
+          label: "Happy Photographers",
+          description: "Satisfied customers nationwide"
         },
         {
-          number: "200+",
-          label: "Fashion Items",
-          description: "Unique pieces in our collection"
+          number: "500+",
+          label: "Camera Products",
+          description: "Cameras, lenses & accessories"
         },
         {
-          number: "7",
+          number: "7+",
           label: "Years Experience",
-          description: "In premium fashion industry"
+          description: "In camera retail industry"
         },
         {
-          number: "25+",
-          label: "Countries",
-          description: "Global shipping reach"
+          number: "50+",
+          label: "Top Brands",
+          description: "Canon, Nikon, Sony & more"
+        },
+        {
+          number: "24/7",
+          label: "Support",
+          description: "Always here to help you"
+        },
+        {
+          number: "99%",
+          label: "Satisfaction Rate",
+          description: "Customer happiness guaranteed"
         }
       ]
     },
 
     awards: {
-      title: "Recognition & Awards",
-      subtitle: "Celebrating Excellence in Fashion",
+      title: "Recognition & Achievements",
+      subtitle: "Celebrating Excellence in Photography Retail",
       awards: [
         {
-          title: "Best Fashion Brand 2023",
-          organization: "Fashion Excellence Awards",
+          title: "Best Camera Retailer 2024",
+          organization: "Bangladesh Retailers Association",
+          year: "2024",
+          description: "Recognized for outstanding product quality, authentic equipment, and exceptional customer service."
+        },
+        {
+          title: "Authorized Premium Dealer",
+          organization: "Canon, Nikon, Sony & Fujifilm",
           year: "2023",
-          description: "Recognized for outstanding quality and customer service."
+          description: "Official authorized dealer status from leading camera manufacturers, ensuring genuine products and warranties."
         },
         {
-          title: "Sustainable Fashion Leader",
-          organization: "Eco Fashion Council",
+          title: "Customer Choice Award",
+          organization: "Photography Community Bangladesh",
+          year: "2023",
+          description: "Voted best camera shop by Bangladesh's photography community for expert guidance and reliable service."
+        },
+        {
+          title: "Excellence in E-Commerce",
+          organization: "Digital Commerce Association",
           year: "2022",
-          description: "Leading the way in sustainable fashion practices."
-        },
-        {
-          title: "Innovation in Design",
-          organization: "Fashion Design Institute",
-          year: "2021",
-          description: "Awarded for innovative approach to modern fashion."
+          description: "Awarded for innovative online shopping experience and seamless delivery of photography equipment."
         }
       ]
     },
 
     cta: {
-  title: "Ready to Experience Digicam?",
-  subtitle: "Join thousands of satisfied customers who trust our premium fashion",
-      buttonText: "Shop Now",
+      title: "Ready to Start Your Photography Journey?",
+      subtitle: "Join thousands of satisfied photographers who trust us for their camera needs",
+      description: "Browse our collection of professional cameras, lenses, and accessories. Get expert advice and competitive prices on all your photography equipment.",
+      buttonText: "Shop Cameras",
       buttonLink: "/allProducts",
       secondaryButtonText: "Contact Us",
       secondaryButtonLink: "/contact"

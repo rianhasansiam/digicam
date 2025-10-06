@@ -22,25 +22,25 @@ export default function ContactPage() {
     title: "Contact Us",
     subtitle: "Have questions? We're here to help!",
     description: "Get in touch with us for any questions about our products or services.",
-    address: "Paduar Bazar Bishwa Road Cumilla, Bangladesh",
+    address: "Dhanmondi, Dhaka, Bangladesh",
     contactMethods: [
       {
         iconName: "Mail",
         label: "Email Us",
-        value: "engnazrulislam2025@gmail.com",
+        value: "digicammarketbd@gmail.com",
         description: "We'll respond within 24 hours"
       },
       {
         iconName: "Phone",
         label: "Call Us",
-        value: "+965 6577 8584",
-        description: "Mon-Fri "
+        value: "+880 18704 04001",
+        description: "Everyday: 9:00 AM - 6:00 PM"
       },
       {
         iconName: "MapPin",
         label: "Visit Us",
-        value: "Paduar Bazar Bishwa Road Cumilla",
-        description: "Cumilla, Bangladesh"
+        value: "Dhanmondi, Dhaka",
+        description: "Dhaka, Bangladesh"
       }
     ],
     businessHours: [
@@ -51,15 +51,15 @@ export default function ContactPage() {
     socialLinks: [
       { 
         iconName: "Facebook",
-        url: "https://www.facebook.com/profile.php?id=61580873192277&rdid=kWv2f0UwQSaKnsOq&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1TT28ZZv4Q%2F#"
+        url: "https://www.facebook.com/share/19Tm5Tru5w/"
       },
       { 
         iconName: "Whatsapp",
-        url: "https://wa.me/qr/XIGA4XU3GM37K1"
+        url: "https://wa.me/8801870404001"
       },
       { 
         iconName: "Instagram",
-        url: "https://www.instagram.com/eng_nazrulislam"
+        url: "https://www.instagram.com/digicam.market?igsh=MXhhMnp6M2I1anhtaw=="
       }
     ],
     formConfig: {
