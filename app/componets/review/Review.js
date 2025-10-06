@@ -18,7 +18,7 @@ export default function Review({ reviewsData }) {
       .map((review, index) => ({
         id: review._id || `review-${index}`,
         name: review.userName || review.customerName || review.name || `Customer ${index + 1}`,
-        avatar: review.avatar || review.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.userName || 'Customer')}&size=150&background=f3f4f6&color=374151`,
+        avatar: review.userAvatar || review.avatar || review.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(review.userName || 'Customer')}&size=150&background=f3f4f6&color=374151`,
         rating: review.rating || 5,
         title: review.title || review.subject || "Great Product!",
         comment: review.comment || review.review || review.description || "Excellent experience with this product!",

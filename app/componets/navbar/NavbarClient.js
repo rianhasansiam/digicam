@@ -178,10 +178,10 @@ const NavbarClient = ({ navItems, defaultShopCategories }) => {
               className="flex items-center space-x-3 cursor-pointer"
             >
               <Image
-                src="/logo1.png"
+                src="/logo.png"
                 alt="Digicam"
-                width={50}
-                height={50}
+                width={75}
+                height={75}
                 className="rounded-lg"
                 priority
                 style={{ height: "auto" }}
@@ -190,7 +190,7 @@ const NavbarClient = ({ navItems, defaultShopCategories }) => {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-800 to-black bg-clip-text text-transparent">
                   Digicam
                 </h1>
-                <p className="text-xs text-gray-500 -mt-1">Premium Fashion</p>
+                <p className="text-xs text-gray-500 -mt-1">Camera Accessories</p>
               </div>
             </motion.div>
           </Link>

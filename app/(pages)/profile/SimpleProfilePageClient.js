@@ -118,13 +118,25 @@ const SimpleProfilePageClient = () => {
       }) : [];
       
       // Fetch user reviews
-      const reviewsResponse = await fetch('/api/reviews');
-      const reviewsData = await reviewsResponse.json();
-      
-      // Filter reviews for current user
-      const userReviews = Array.isArray(reviewsData) ? reviewsData.filter(review => {
-        return review.customerEmail === session.user.email;
-      }) : [];
+      let userReviews = [];
+      try {
+        const reviewsResponse = await fetch('/api/reviews');
+        
+        if (reviewsResponse.ok) {
+          const reviewsData = await reviewsResponse.json();
+          
+          // Filter reviews for current user (check both userEmail and customerEmail for compatibility)
+          userReviews = Array.isArray(reviewsData) ? reviewsData.filter(review => {
+            return review.userEmail === session.user.email || 
+                   review.customerEmail === session.user.email;
+          }) : [];
+        } else {
+          console.warn('Failed to fetch reviews:', reviewsResponse.status);
+        }
+      } catch (reviewsError) {
+        console.error('Error fetching reviews:', reviewsError);
+        // Continue with empty reviews array
+      }
       
       // Set all data
       setData({
@@ -277,18 +289,11 @@ const SimpleProfilePageClient = () => {
       const reviewData = {
         productId: selectedProductForReview.productId,
         productName: selectedProductForReview.productName,
-        customerName: data.user?.name || `${formData.firstName} ${formData.lastName}`.trim(),
-        customerEmail: session.user.email,
+        // Note: userName and userEmail will be set by the API from authenticated user
         rating: reviewFormData.rating,
         comment: reviewFormData.comment.trim(),
         title: reviewFormData.title.trim() || `Review for ${selectedProductForReview.productName}`,
-        photo: reviewFormData.photo,
-        verified: true, // Since it's based on actual order
-        status: 'pending', // Will be reviewed by admin
-        date: now.toISOString().slice(0, 10), // YYYY-MM-DD
-        helpful: 0,
-        createdAt: now.toISOString(),
-        updatedAt: now.toISOString()
+        photo: reviewFormData.photo
       };
 
       const response = await fetch('/api/reviews', {

@@ -43,7 +43,9 @@ const AdminPageClient = ({ adminData, navigationItems }) => {
 const { data: products = [], isLoading: productsLoading } = useGetData({ name: 'products', api: '/api/products', cacheType: 'STATIC' });
 const { data: users = [], isLoading: usersLoading } = useGetData({ name: 'users', api: '/api/users', cacheType: 'DYNAMIC' });
 const { data: orders = [], isLoading: ordersLoading } = useGetData({ name: 'orders', api: '/api/orders', cacheType: 'DYNAMIC' });
-const { data: reviews = [], isLoading: reviewsLoading } = useGetData({ name: 'reviews', api: '/api/reviews', cacheType: 'DYNAMIC' });  // Shared loading state
+const { data: reviews = [], isLoading: reviewsLoading } = useGetData({ name: 'reviews', api: '/api/reviews', cacheType: 'DYNAMIC' });
+  
+  // Shared loading state
   const isLoading = productsLoading || usersLoading || ordersLoading || reviewsLoading;
   
   // Shared data object to pass to components

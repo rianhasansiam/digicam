@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useGetData } from '@/lib/hooks/useGetData';
 import { useAddData } from '@/lib/hooks/useAddData';
 import { useAppSelector, useAppDispatch } from '@/app/redux/reduxHooks';
@@ -9,8 +9,8 @@ import { loadCartFromStorage, clearCart } from '@/app/redux/slice';
 import { useShippingTaxSettings } from '@/lib/hooks/useShippingTaxSettings';
 import { PLACEHOLDER_IMAGES } from '@/lib/constants';
 import { 
-  ShoppingBag, CreditCard, Lock, CheckCircle, AlertCircle, 
-  ArrowLeft, User, MapPin, Phone, Mail, Truck, Star, X
+  ShoppingBag, CheckCircle, AlertCircle, 
+  ArrowLeft, User, Truck
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -71,29 +71,12 @@ const CheckoutPageClient = () => {
   });
   
   // State management
-  const [selectedPayment, setSelectedPayment] = useState('');
-  const [showTransactionForm, setShowTransactionForm] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState('cod'); // Auto-select COD
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderProcessed, setOrderProcessed] = useState(false); // Prevent multiple submissions
   const [isRedirecting, setIsRedirecting] = useState(false); // Prevent showing empty cart during redirect
   
-  // Transaction form refs to avoid re-rendering during typing
-  const transactionIdRef = useRef(null);
-  const paymentDateRef = useRef(null);
-  const bankNameRef = useRef(null);
-  const accountNumberRef = useRef(null);
-  const amountRef = useRef(null);
-  const noteRef = useRef(null);
-
-  // Reset transaction form
-  const resetTransactionForm = () => {
-    if (transactionIdRef.current) transactionIdRef.current.value = '';
-    if (paymentDateRef.current) paymentDateRef.current.value = '';
-    if (bankNameRef.current) bankNameRef.current.value = '';
-    if (accountNumberRef.current) accountNumberRef.current.value = '';
-    if (amountRef.current) amountRef.current.value = '';
-    if (noteRef.current) noteRef.current.value = '';
-  };
+  // Removed transaction form refs - only COD available
   
   // Customer information
   const [customerInfo, setCustomerInfo] = useState({
@@ -105,13 +88,9 @@ const CheckoutPageClient = () => {
     zipCode: ''
   });
 
-  // Payment methods configuration
+  // Payment methods configuration - Only Cash on Delivery
   const paymentMethods = [
-    { id: 'card', name: 'Credit/Debit Card', icon: CreditCard, description: 'Visa, MasterCard, American Express' },
-    { id: 'paypal', name: 'PayPal', icon: Lock, description: 'Pay with your PayPal account' },
-    { id: 'cod', name: 'Cash on Delivery', icon: Truck, description: 'Pay when you receive your order' },
-    { id: 'apple', name: 'Apple Pay', icon: CheckCircle, description: 'Pay with Touch ID or Face ID' },
-    { id: 'google', name: 'Google Pay', icon: CheckCircle, description: 'Pay with Google Pay' }
+    { id: 'cod', name: 'Cash on Delivery', icon: Truck, description: 'Pay when you receive your order' }
   ];
 
   // Load cart from localStorage when products are loaded
@@ -243,29 +222,21 @@ const CheckoutPageClient = () => {
     }
   };
 
-  // Process order
+  // Process order - COD only
   const processOrder = async () => {
     if (orderProcessed) return; // Prevent multiple submissions
     
     if (!isFormValid()) {
-      alert('Please fill in all required fields and select a payment method.');
+      alert('Please fill in all required fields.');
       return;
     }
 
-    // If payment method is not COD, show transaction form
-    if (selectedPayment !== 'cod') {
-      if (!orderProcessed) {
-        setShowTransactionForm(true);
-      }
-      return;
-    }
-
-    // For COD, process order directly
+    // Process COD order directly
     await processOrderWithPayment();
   };
 
-  // Process order with payment information
-  const processOrderWithPayment = async (transactionData = null) => {
+  // Process order with COD payment
+  const processOrderWithPayment = async () => {
     if (orderProcessed || isProcessing) return; // Prevent multiple submissions
     
     setIsProcessing(true);
@@ -299,9 +270,8 @@ const CheckoutPageClient = () => {
           subtotal: (item.price || 0) * (item.quantity || 0)
         })),
         paymentMethod: {
-          type: selectedPayment,
-          name: paymentMethods.find(p => p.id === selectedPayment)?.name,
-          ...(transactionData && { transactionInfo: transactionData })
+          type: 'cod',
+          name: 'Cash on Delivery'
         },
         orderSummary: {
           subtotal: parseFloat(totals.subtotal),
@@ -322,34 +292,28 @@ const CheckoutPageClient = () => {
       await createUserIfNotExists(customerInfo);
 
       // Create order details for display
-      const selectedPaymentMethod = paymentMethods.find(p => p.id === selectedPayment);
       const order = {
         orderId: orderData.orderId,
         date: new Date().toLocaleDateString(),
         customer: customerInfo,
         items: enrichedCartItems,
         payment: {
-          id: selectedPaymentMethod?.id,
-          type: selectedPaymentMethod?.id, // Include both for compatibility
-          name: selectedPaymentMethod?.name,
-          description: selectedPaymentMethod?.description,
-          ...(transactionData && { transactionInfo: transactionData })
+          id: 'cod',
+          type: 'cod',
+          name: 'Cash on Delivery',
+          description: 'Pay when you receive your order'
         },
         totals: totals,
         status: 'confirmed'
       };
 
       setIsProcessing(false);
-      setShowTransactionForm(false);
 
       // Set redirecting state to prevent showing empty cart
       setIsRedirecting(true);
 
       // Clear cart from localStorage and Redux store
       dispatch(clearCart());
-      
-      // Reset transaction form
-      resetTransactionForm();
 
       // Redirect to order summary page
       const orderDataParam = encodeURIComponent(JSON.stringify(order));
@@ -361,194 +325,6 @@ const CheckoutPageClient = () => {
       alert('There was an error processing your order. Please try again.');
     }
   };
-
-  // Transaction Form Modal for non-COD payments
-  const TransactionForm = () => (
-    <AnimatePresence>
-      {showTransactionForm && !orderProcessed && (
-        <motion.div
-          className="fixed inset-0 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-          >
-            {/* Modal Header */}
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <CreditCard className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Payment Information</h2>
-                  <p className="text-gray-600">Please provide transaction details</p>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  resetTransactionForm();
-                  setShowTransactionForm(false);
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Form Body */}
-            <div className="p-6 space-y-6">
-              {/* Payment Method Display */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h3 className="font-medium text-gray-900 mb-2">Selected Payment Method</h3>
-                <div className="flex items-center space-x-3">
-                  {(() => {
-                    const PaymentIcon = paymentMethods.find(p => p.id === selectedPayment)?.icon;
-                    return PaymentIcon ? <PaymentIcon className="w-6 h-6 text-gray-600" /> : null;
-                  })()}
-                  <span className="font-medium">{paymentMethods.find(p => p.id === selectedPayment)?.name}</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-1">Total Amount: ৳{totals.total}</p>
-              </div>
-
-              {/* Transaction Form */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Transaction ID *
-                  </label>
-                  <input
-                    ref={transactionIdRef}
-                    type="text"
-                    placeholder="Enter transaction ID"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Payment Date *
-                  </label>
-                  <input
-                    ref={paymentDateRef}
-                    type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Bank Name
-                  </label>
-                  <input
-                    ref={bankNameRef}
-                    type="text"
-                    placeholder="Enter bank name"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Account Number (Last 4 digits)
-                  </label>
-                  <input
-                    ref={accountNumberRef}
-                    type="text"
-                    placeholder="****"
-                    maxLength="4"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Amount *
-                  </label>
-                  <input
-                    ref={amountRef}
-                    type="number"
-                    step="0.01"
-                    placeholder={`${totals.total}`}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    required
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Additional Notes
-                  </label>
-                  <textarea
-                    ref={noteRef}
-                    placeholder="Any additional notes about the transaction..."
-                    rows="3"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex space-x-4 pt-4">
-                <button
-                  onClick={() => {
-                    resetTransactionForm();
-                    setShowTransactionForm(false);
-                  }}
-                  className="flex-1 bg-gray-200 text-gray-800 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={() => {
-                    if (orderProcessed || isProcessing) return; // Prevent multiple submissions
-                    
-                    // Get values from refs
-                    const transactionId = transactionIdRef.current?.value || '';
-                    const paymentDate = paymentDateRef.current?.value || '';
-                    const amount = amountRef.current?.value || '';
-                    const bankName = bankNameRef.current?.value || '';
-                    const accountNumber = accountNumberRef.current?.value || '';
-                    const note = noteRef.current?.value || '';
-                    
-                    // Validate required fields
-                    if (!transactionId.trim() || !paymentDate || !amount) {
-                      alert('Please fill in all required fields (Transaction ID, Payment Date, and Amount).');
-                      return;
-                    }
-                    
-                    // Create transaction data object
-                    const transactionData = {
-                      transactionId: transactionId.trim(),
-                      paymentDate,
-                      amount: parseFloat(amount),
-                      bankName: bankName.trim(),
-                      accountNumber: accountNumber.trim(),
-                      note: note.trim(),
-                      paymentMethod: paymentMethods.find(p => p.id === selectedPayment)?.name
-                    };
-                    
-                    // Process order with transaction data
-                    processOrderWithPayment(transactionData);
-                  }}
-                  disabled={isProcessing}
-                  className="flex-1 bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition-colors font-medium disabled:bg-gray-400"
-                >
-                  {isProcessing ? 'Processing...' : 'Confirm Payment'}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
 
   // Empty cart state or redirecting state
   if ((!isLoading && enrichedCartItems.length === 0 && !isRedirecting) || isRedirecting) {
@@ -681,7 +457,7 @@ const CheckoutPageClient = () => {
             {/* Payment Methods */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <CreditCard className="w-5 h-5 mr-2" />
+                <Truck className="w-5 h-5 mr-2" />
                 Payment Method
               </h2>
               
@@ -832,9 +608,6 @@ const CheckoutPageClient = () => {
           </motion.div>
         </div>
       </div>
-
-      {/* Transaction Form Modal */}
-      <TransactionForm />
     </div>
   );
 };

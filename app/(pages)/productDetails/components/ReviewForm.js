@@ -4,8 +4,10 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Star, X, CheckCircle, AlertCircle, Camera, Upload } from 'lucide-react';
 import { useAddData } from '@/lib/hooks/useAddData';
+import { uploadToImageBB } from '@/lib/imagebb';
+import Image from 'next/image';
 
 export default function ReviewForm({ productId, productName, onClose, onSuccess }) {
   const { data: session } = useSession();
@@ -15,12 +17,41 @@ export default function ReviewForm({ productId, productName, onClose, onSuccess 
   const [title, setTitle] = useState('');
   const [comment, setComment] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [userAvatar, setUserAvatar] = useState(session?.user?.image || null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   // Use optimistic updates hook
   const { addData, isPending, error } = useAddData({
     api: '/api/reviews',
     name: 'reviews'
   });
+
+  // Handle avatar upload
+  const handleAvatarUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Image size should be less than 2MB');
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const imageUrl = await uploadToImageBB(file);
+      setUserAvatar(imageUrl);
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      alert('Failed to upload avatar. Please try again.');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,6 +79,7 @@ export default function ReviewForm({ productId, productName, onClose, onSuccess 
         rating,
         title: title.trim() || 'Great Product!',
         comment: comment.trim(),
+        userAvatar: userAvatar || session?.user?.image || null, // Include avatar
         verified: true
       });
 
@@ -99,6 +131,51 @@ export default function ReviewForm({ productId, productName, onClose, onSuccess 
       <div className="bg-gray-50 rounded-lg p-4">
         <p className="text-sm text-gray-600 mb-1">Reviewing:</p>
         <p className="font-semibold text-gray-900">{productName}</p>
+      </div>
+
+      {/* User Avatar Upload */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-900 mb-3">
+          Your Profile Picture (Optional)
+        </label>
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            {userAvatar || session?.user?.image ? (
+              <Image
+                src={userAvatar || session?.user?.image}
+                alt="User avatar"
+                width={80}
+                height={80}
+                className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold">
+                {session?.user?.name?.[0]?.toUpperCase() || 'U'}
+              </div>
+            )}
+            {uploadingAvatar && (
+              <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </div>
+          <div className="flex-1">
+            <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-sm font-medium text-gray-700">
+              <Camera className="w-4 h-4" />
+              <span>Change Photo</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                disabled={uploadingAvatar}
+                className="hidden"
+              />
+            </label>
+            <p className="text-xs text-gray-500 mt-2">
+              Upload your photo to personalize your review (Max 2MB)
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Rating */}
