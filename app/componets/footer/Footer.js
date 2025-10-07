@@ -31,8 +31,8 @@ export default function Footer() {
                   </h1>
               </Link>
               <p className="text-white/60 text-sm mb-9">
-                We have clothes that suits your style and which you&apos;re proud to
-                wear. From women to men.
+                We have cameras and photography equipment that suit your needs and which you&apos;re proud to
+                own. For professionals and enthusiasts alike.
               </p>
               <div className="flex items-center">
                 {socialsData.map((social) => (

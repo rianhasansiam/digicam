@@ -26,7 +26,7 @@ const SizeFilter = ({ products = [] }) => {
     
     const sizes = Array.from(sizeSet);
     
-    // Custom sorting for clothing sizes
+    // Custom sorting for camera specifications (sensor sizes, lens sizes, etc.)
     const sizeOrder = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
     const numberSizes = sizes.filter(size => /^\d+/.test(size)).sort((a, b) => parseInt(a) - parseInt(b));
     const letterSizes = sizes.filter(size => sizeOrder.includes(size)).sort((a, b) => {

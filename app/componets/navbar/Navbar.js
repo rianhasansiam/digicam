@@ -49,21 +49,21 @@ export default function Navbar() {
     {
       name: 'New Arrivals',
       description: 'Latest camera models',
-      icon: '✨',
+      icon: '',
       count: 0,
       href: '/allProducts?sort=newest'
     },
     {
       name: 'Sale Items',
       description: 'Great deals and discounts',
-      icon: '🏷️',
+      icon: '',
       count: 0,
       href: '/allProducts?sale=true'
     },
     {
       name: 'Popular',
       description: 'Trending products',
-      icon: '�',
+      icon: '',
       count: 0,
       href: '/allProducts?sort=popular'
     }

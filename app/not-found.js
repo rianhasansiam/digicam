@@ -66,32 +66,32 @@ export default function NotFound() {
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Link
-                href="/allProducts?category=mens"
+                href="/allProducts?category=dslr"
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors text-center"
               >
-                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">👔</div>
+                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">�</div>
                 <span className="text-sm font-medium text-gray-700">DSLR Cameras</span>
               </Link>
               <Link
-                href="/allProducts?category=womens"
+                href="/allProducts?category=mirrorless"
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors text-center"
               >
-                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">👗</div>
+                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">�</div>
                 <span className="text-sm font-medium text-gray-700">Mirrorless Cameras</span>
               </Link>
               <Link
                 href="/allProducts?category=accessories"
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors text-center"
               >
-                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">👜</div>
+                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">🎒</div>
                 <span className="text-sm font-medium text-gray-700">Accessories</span>
               </Link>
               <Link
-                href="/allProducts?category=shoes"
+                href="/allProducts?category=lenses"
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors text-center"
               >
-                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">👠</div>
-                <span className="text-sm font-medium text-gray-700">Footwear</span>
+                <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">�</div>
+                <span className="text-sm font-medium text-gray-700">Lenses</span>
               </Link>
             </div>
           </div>

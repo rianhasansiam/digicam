@@ -49,14 +49,14 @@ const NavbarClient = ({ navItems, defaultShopCategories }) => {
   // Helper function to get category icon
   const getCategoryIcon = useCallback((categoryName) => {
     const name = categoryName?.toLowerCase() || '';
-    if (name.includes('men') || name.includes('male')) return '👔';
-    if (name.includes('women') || name.includes('female') || name.includes('ladies')) return '👗';
-    if (name.includes('shoes') || name.includes('footwear')) return '👟';
-    if (name.includes('accessories') || name.includes('jewelry')) return '💍';
-    if (name.includes('bags') || name.includes('handbag')) return '👜';
-    if (name.includes('kids') || name.includes('children')) return '👶';
-    if (name.includes('sportswear') || name.includes('athletic')) return '🏃';
-    return '👕'; // Default clothing icon
+    if (name.includes('dslr') || name.includes('canon') || name.includes('nikon')) return '�';
+    if (name.includes('mirrorless') || name.includes('sony') || name.includes('fuji')) return '�';
+    if (name.includes('lens') || name.includes('lenses')) return '�';
+    if (name.includes('accessories') || name.includes('tripod') || name.includes('bag')) return '🎒';
+    if (name.includes('lighting') || name.includes('flash') || name.includes('light')) return '�';
+    if (name.includes('drone') || name.includes('gimbal') || name.includes('stabilizer')) return '�';
+    if (name.includes('action') || name.includes('gopro') || name.includes('sports')) return '�';
+    return '�'; // Default camera icon
   }, []);
 
   // Combine real categories with default shop categories
@@ -90,7 +90,7 @@ const NavbarClient = ({ navItems, defaultShopCategories }) => {
           return {
             name: category.name,
             description: `${productCount} items available`,
-            icon: getCategoryIcon(category.name),
+     
             count: productCount,
             href: `/allProducts?category=${encodeURIComponent(category.name)}`
           };
