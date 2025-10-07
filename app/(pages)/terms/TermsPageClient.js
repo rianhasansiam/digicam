@@ -150,7 +150,7 @@ const TermsPageClient = () => {
         'If you have any questions about these Terms and Conditions, please contact us:',
   'Email: legal@digicam.com',
         'Phone: +1 (555) 123-4567',
-        'Address: 123 Fashion Street, Style City, SC 12345'
+        'Address: 123 Camera Street, Photo City, PC 12345'
       ]
     }
   ];

@@ -26,7 +26,7 @@ export default function CategoryClient({ categories = [] }) {
           SHOP BY CATEGORY
         </h2>
         <p className="text-gray-600 text-lg">
-          Explore our collection of fashion categories
+          Explore our collection of camera categories
         </p>
       </div>
 

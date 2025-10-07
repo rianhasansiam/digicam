@@ -19,8 +19,7 @@ import {
   Bell,
   Search,
   Shield,
-  Mail,
-  MessageCircle
+  Mail
 } from 'lucide-react';
 import LoadingSpinner from '../../componets/loading/LoadingSpinner';
 
@@ -59,10 +58,6 @@ const ShippingTaxSettings = dynamic(() => import('./adminComponents/shippingTax/
 
 const AllMessages = dynamic(() => import('./adminComponents/allMessages/AllMessages'), {
   loading: () => <LoadingSpinner message="Loading Messages..." />
-});
-
-const AdminChatPanel = dynamic(() => import('./adminComponents/AdminChatPanel'), {
-  loading: () => <LoadingSpinner message="Loading Chat..." />
 });
 
 
@@ -107,8 +102,7 @@ const { data: reviews = [], isLoading: reviewsLoading } = useGetData({ name: 're
     'categories': FolderOpen,
     'coupons': Ticket,
     'shipping-tax': Settings,
-    'messages': Mail,
-    'chat': MessageCircle,
+    'messages': Mail
   };
 
   // Component mapping for client-side use (direct client components)
@@ -121,8 +115,7 @@ const { data: reviews = [], isLoading: reviewsLoading } = useGetData({ name: 're
     'categories': AllCategoryClient,
     'coupons': AllCuponsClient,
     'shipping-tax': ShippingTaxSettings,
-    'messages': AllMessages,
-    'chat': AdminChatPanel,
+    'messages': AllMessages
   };
 
   const currentComponent = componentMap[activeTab] || Dashboard;

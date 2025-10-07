@@ -3,8 +3,8 @@ import Image from 'next/image';
 
 // Metadata for 404 page
 export const metadata = {
-  title: "Page Not Found - Digicam | Premium Fashion Store",
-  description: "The page you're looking for doesn't exist. Continue shopping at Digicam for premium fashion and accessories.",
+  title: "Page Not Found - Digicam | Premium Camera Store",
+  description: "The page you're looking for doesn't exist. Continue shopping at Digicam for premium cameras and photography equipment.",
   robots: "noindex, nofollow",
 };
 
@@ -36,7 +36,7 @@ export default function NotFound() {
               Oops! Page Not Found
             </h2>
             <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
-              The fashion piece you&apos;re looking for seems to have walked off the runway. 
+              The camera gear you&apos;re looking for seems to have been discontinued or moved. 
               Don&apos;t worry, we have plenty more stunning styles waiting for you!
             </p>
           </div>
@@ -70,14 +70,14 @@ export default function NotFound() {
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors text-center"
               >
                 <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">👔</div>
-                <span className="text-sm font-medium text-gray-700">Men&apos;s Fashion</span>
+                <span className="text-sm font-medium text-gray-700">DSLR Cameras</span>
               </Link>
               <Link
                 href="/allProducts?category=womens"
                 className="group p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors text-center"
               >
                 <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">👗</div>
-                <span className="text-sm font-medium text-gray-700">Women&apos;s Fashion</span>
+                <span className="text-sm font-medium text-gray-700">Mirrorless Cameras</span>
               </Link>
               <Link
                 href="/allProducts?category=accessories"

@@ -7,7 +7,7 @@ export default function StructuredData() {
   "name": "Digicam",
   "url": "https://digicam.com",
   "logo": "https://digicam.com/logo.png",
-  "description": "Premium fashion store offering quality clothing and accessories for everyone.",
+  "description": "Premium camera store offering quality cameras and photography equipment for everyone.",
     "sameAs": [
   "https://facebook.com/digicam",
   "https://twitter.com/digicam", 
@@ -15,7 +15,7 @@ export default function StructuredData() {
     ],
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Fashion Street",
+      "streetAddress": "123 Camera Street",
       "addressLocality": "New York",
       "addressRegion": "NY",
       "postalCode": "10001",
@@ -29,14 +29,14 @@ export default function StructuredData() {
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-  "name": "Digicam Fashion Collection",
+  "name": "Digicam Camera Collection",
       "itemListElement": [
         {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Product",
-            "name": "Premium Fashion Collection",
-            "category": "Clothing"
+            "name": "Premium Camera Collection",
+            "category": "Cameras & Photography"
           }
         }
       ]

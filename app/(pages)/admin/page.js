@@ -11,8 +11,7 @@ import {
   History,
   Shield,
   Settings,
-  Mail,
-  MessageCircle
+  Mail
 } from 'lucide-react';
 
 // Import admin components directly (no wrapper layers)
@@ -25,18 +24,17 @@ import AllCuponsClient from './adminComponents/allCupons/AllCuponsClient';
 import AllCategoryClient from './adminComponents/allCategory/AllCategoryClient';
 import ShippingTaxSettings from './adminComponents/shippingTax/ShippingTaxSettings';
 import AllMessages from './adminComponents/allMessages/AllMessages';
-import AdminChatPanel from './adminComponents/AdminChatPanel';
 
 
 // Metadata for SEO - Admin Panel
 export const metadata = {
-  title: "Admin Panel - Digicam | Manage Your Fashion Business",
-  description: "Comprehensive admin dashboard for managing products, orders, customers, and analytics for Digicam premium fashion store.",
-  keywords: "admin panel, dashboard, fashion management, inventory, orders, customers, analytics",
+  title: "Admin Panel - Digicam | Manage Your Camera Business",
+  description: "Comprehensive admin dashboard for managing products, orders, customers, and analytics for Digicam premium camera store.",
+  keywords: "admin panel, dashboard, camera store management, inventory, orders, customers, analytics",
   robots: "noindex, nofollow", // Admin panel should not be indexed
   openGraph: {
     title: "Admin Panel - Digicam",
-    description: "Business management dashboard for Digicam fashion store",
+    description: "Business management dashboard for Digicam camera store",
     type: "website",
   },
 };
@@ -48,7 +46,7 @@ export default function AdminPage() {
     brandInfo: {
       name: "Digicam",
       tagline: "Admin Panel",
-      description: "Manage your premium fashion business"
+      description: "Manage your premium camera business"
     },
     user: {
       name: "Admin User",
@@ -141,14 +139,7 @@ export default function AdminPage() {
       icon: Mail,
       component: AllMessages,
       description: 'Customer Messages'
-    },
-    {
-      id: 'chat',
-      name: 'Live Chat',
-      icon: MessageCircle,
-      component: AdminChatPanel,
-      description: 'Customer Support Chat'
-    },
+    }
     
   ];
 

@@ -2,8 +2,8 @@ import SignupPageClient from './SignupPageClient';
 
 // Metadata for SEO
 export const metadata = {
-  title: "Sign Up - Digicam | Join Our Fashion Community",
-  description: "Create your Digicam account to access exclusive fashion collections.",
+  title: "Sign Up - Digicam | Join Our Camera Community",
+  description: "Create your Digicam account to access exclusive camera collections.",
 };
 
 // Simple signup page
@@ -12,7 +12,7 @@ export default function SignupPage() {
   const signupData = {
     brandInfo: {
   name: "Digicam",
-      tagline: "Premium Fashion Community"
+      tagline: "Premium Camera Community"
     },
     formData: {
   title: "Join Digicam",
@@ -43,8 +43,8 @@ export default function SignupPage() {
       "Include at least one special character"
     ],
     benefitsSection: {
-      title: "Join Our Fashion Community",
-      subtitle: "Experience premium fashion with exclusive member benefits",
+      title: "Join Our Camera Community",
+      subtitle: "Experience premium cameras with exclusive member benefits",
       benefits: [
         {
           icon: "Crown",

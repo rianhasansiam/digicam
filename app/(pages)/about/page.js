@@ -89,7 +89,7 @@ export default function AboutPage() {
         {
           name: "Sarah Johnson",
           role: "Founder & CEO",
-          bio: "Leading Digicam with vision and passion for premium fashion.",
+          bio: "Leading Digicam with vision and passion for premium cameras.",
           image: "https://images.unsplash.com/photo-1494790108755-2616b612b17c?w=400&h=400&fit=crop&auto=format",
           social: {
             linkedin: "https://linkedin.com/in/sarah-johnson",
@@ -100,7 +100,7 @@ export default function AboutPage() {
         {
           name: "Michael Chen", 
           role: "Head Designer",
-          bio: "Creating innovative designs that define modern fashion trends.",
+          bio: "Creating innovative designs that define modern camera technology.",
           image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&auto=format",
           social: {
             linkedin: "https://linkedin.com/in/michael-chen",
@@ -111,7 +111,7 @@ export default function AboutPage() {
         {
           name: "Emily Davis",
           role: "Creative Director", 
-          bio: "Bringing creative excellence to every fashion collection.",
+          bio: "Bringing creative excellence to every camera collection.",
           image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&auto=format",
           social: {
             linkedin: "https://linkedin.com/in/emily-davis",

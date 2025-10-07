@@ -79,7 +79,7 @@ const AboutPageClient = ({ aboutData }) => {
         <div className="absolute inset-0 z-0">
           <Image
             src={aboutData.hero.backgroundImage}
-            alt="Digicam Fashion"
+            alt="Digicam Camera Store"
             fill
             className="object-cover"
             priority

@@ -23,7 +23,7 @@ export default function Error({
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-900">Digicam</h1>
-              <p className="text-xs text-gray-600">Premium Fashion</p>
+              <p className="text-xs text-gray-600">Premium Cameras</p>
             </div>
           </Link>
           <nav className="hidden md:flex space-x-6">
@@ -63,7 +63,7 @@ export default function Error({
               Oops! Something Went Wrong
             </h2>
             <p className="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
-              We&apos;re experiencing a temporary hiccup in our fashion universe. 
+              We&apos;re experiencing a temporary hiccup in our camera store. 
               Our team is working to fix this issue. Please try again in a moment.
             </p>
             
@@ -114,7 +114,7 @@ export default function Error({
                   <span className="text-2xl">🛍️</span>
                 </div>
                 <h4 className="font-medium text-gray-900 mb-2">Continue Shopping</h4>
-                <p className="text-sm text-gray-600">Browse our latest fashion collections</p>
+                <p className="text-sm text-gray-600">Browse our latest camera collections</p>
               </div>
               <div className="text-center p-4">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -167,7 +167,7 @@ export default function Error({
             <Link href="/profile" className="hover:text-gray-700 transition-colors">My Account</Link>
           </div>
           <p className="text-xs text-gray-400 mt-4">
-            © 2025 Digicam. Premium Fashion Store.
+            © 2025 Digicam. Premium Camera Store.
           </p>
         </div>
       </footer>

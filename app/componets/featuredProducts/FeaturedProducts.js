@@ -17,7 +17,7 @@ export default function FeaturedProducts({ productsData }) {
         _id: product.id || product._id,
         id: product.id || product._id,
         name: product.name || product.title || `Product ${product.id || product._id}`,
-        category: product.category || 'Fashion',
+        category: product.category || 'Cameras',
         style: product.style || 'Casual',
         price: product.price || product.discountPrice || 99,
         originalPrice: product.originalPrice && product.originalPrice > product.price ? product.originalPrice : null,

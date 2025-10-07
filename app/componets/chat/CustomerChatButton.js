@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { io } from 'socket.io-client';
 import { MessageCircle, X, Send } from 'lucide-react';
 
 export default function CustomerChatButton() {
@@ -12,19 +11,17 @@ export default function CustomerChatButton() {
   const [newMessage, setNewMessage] = useState('');
   const [conversationId, setConversationId] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
-  const [isAdminOnline, setIsAdminOnline] = useState(false);
   const [guestId, setGuestId] = useState(null);
   const [guestName, setGuestName] = useState('');
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [messageStatus, setMessageStatus] = useState({});
-  const [lastSeen, setLastSeen] = useState(null);
   const [adminTyping, setAdminTyping] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [lastMessageCount, setLastMessageCount] = useState(0);
   const messagesEndRef = useRef(null);
-  const socketRef = useRef(null);
+  const pollingIntervalRef = useRef(null);
+  const typingIntervalRef = useRef(null);
 
   // Generate or get guest ID from localStorage
   useEffect(() => {
@@ -96,92 +93,80 @@ export default function CustomerChatButton() {
     }
   };
 
-  // Initialize socket connection when chat opens
+  // Poll for new messages and typing status
+  const pollMessages = useCallback(async () => {
+    if (!conversationId) return;
+
+    try {
+      const msgRes = await fetch(`/api/chat/messages?conversationId=${conversationId}`);
+      const msgData = await msgRes.json();
+      
+      if (msgData.success && msgData.messages) {
+        // Only update if message count changed to avoid unnecessary re-renders
+        if (msgData.messages.length !== lastMessageCount) {
+          setMessages(msgData.messages);
+          setLastMessageCount(msgData.messages.length);
+          
+          // Mark new messages as read
+          await fetch('/api/chat/messages', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ conversationId })
+          });
+        }
+      }
+
+      // Check for admin typing status
+      const typingRes = await fetch(`/api/chat/typing?conversationId=${conversationId}`);
+      const typingData = await typingRes.json();
+      if (typingData.success) {
+        setAdminTyping(typingData.isTyping);
+      }
+    } catch (error) {
+      console.error('Polling error:', error);
+    }
+  }, [conversationId, lastMessageCount]);
+
+  // Initialize chat and start polling when chat opens
   useEffect(() => {
     if (isOpen) {
-      setIsConnecting(true);
       // Initialize conversation
       fetchOrCreateConversation();
 
-      // Get user ID (authenticated or guest)
-      const userId = session?.user?.id || guestId;
-      if (!userId) {
-        setIsConnecting(false);
-        return;
-      }
-
-      // Connect to WebSocket
-      socketRef.current = io(window.location.origin, {
-        transports: ['websocket', 'polling']
-      });
-
-      socketRef.current.on('connect', () => {
-        console.log('Connected to chat server');
-        setIsConnecting(false);
-        socketRef.current.emit('join', userId, 'user');
-      });
-
-      socketRef.current.on('disconnect', () => {
-        setIsConnecting(true);
-      });
-
-      // Listen for new messages
-      socketRef.current.on('new-message', (message) => {
-        setMessages(prev => [...prev, message]);
-        // Mark message as delivered if from admin
-        if (message.senderId !== userId) {
-          socketRef.current.emit('message-delivered', {
-            messageId: message._id,
-            conversationId: message.conversationId
-          });
-        }
-      });
-
-      // Enhanced typing indicators
-      socketRef.current.on('admin-typing', (data) => {
-        setAdminTyping(true);
-        setTimeout(() => setAdminTyping(false), 3000);
-      });
-      
-      socketRef.current.on('admin-stop-typing', () => {
-        setAdminTyping(false);
-      });
-
-      // Message status updates
-      socketRef.current.on('message-status', (data) => {
-        setMessageStatus(prev => ({
-          ...prev,
-          [data.messageId]: data.status
-        }));
-      });
-
-      // Enhanced admin status with last seen
-      socketRef.current.on('admin-status', (data) => {
-        setIsAdminOnline(data.online);
-        if (data.lastSeen) {
-          setLastSeen(new Date(data.lastSeen));
-        }
-      });
-
-      // Admin presence updates
-      socketRef.current.on('admin-presence', (data) => {
-        setIsAdminOnline(data.online);
-        setLastSeen(data.lastSeen ? new Date(data.lastSeen) : null);
-      });
+      // Start polling for new messages every 3 seconds
+      pollingIntervalRef.current = setInterval(() => {
+        pollMessages();
+      }, 3000);
 
       return () => {
-        if (socketRef.current) {
-          socketRef.current.disconnect();
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
         }
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, session, guestId, guestName]);
+  }, [isOpen, pollMessages]);
 
   const sendMessage = async () => {
     if (!newMessage.trim() || !conversationId || isSending) return;
 
+    const messageText = newMessage;
+    setNewMessage('');
     setIsSending(true);
+
+    // Optimistic update - show message immediately
+    const optimisticMessage = {
+      _id: `temp-${Date.now()}`,
+      conversationId,
+      message: messageText,
+      senderId: session?.user?.id || guestId,
+      senderName: session?.user?.name || guestName,
+      senderRole: 'user',
+      timestamp: new Date().toISOString(),
+      status: 'sending'
+    };
+    setMessages(prev => [...prev, optimisticMessage]);
+
     try {
       const userId = session?.user?.id || guestId;
       const userName = session?.user?.name || guestName;
@@ -191,7 +176,7 @@ export default function CustomerChatButton() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversationId,
-          message: newMessage,
+          message: messageText,
           userId,
           userName
         })
@@ -200,18 +185,24 @@ export default function CustomerChatButton() {
       const data = await response.json();
       
       if (data.success) {
-        // Emit via socket for real-time delivery
-        socketRef.current?.emit('send-message', {
-          conversationId,
-          message: newMessage,
-          senderId: userId,
-          senderName: userName
-        });
-
-        setNewMessage('');
+        // Replace optimistic message with real one
+        setMessages(prev => 
+          prev.map(msg => 
+            msg._id === optimisticMessage._id ? data.message : msg
+          )
+        );
+        setLastMessageCount(prev => prev + 1);
+        
+        // Poll immediately to get any updates
+        pollMessages();
+      } else {
+        // Remove failed message
+        setMessages(prev => prev.filter(msg => msg._id !== optimisticMessage._id));
       }
     } catch (error) {
       console.error('Failed to send message:', error);
+      // Remove failed message
+      setMessages(prev => prev.filter(msg => msg._id !== optimisticMessage._id));
     } finally {
       setIsSending(false);
     }
@@ -221,12 +212,18 @@ export default function CustomerChatButton() {
   const handleInputChange = (e) => {
     setNewMessage(e.target.value);
     
-    // Emit typing event
-    if (socketRef.current && conversationId) {
-      socketRef.current.emit('typing', {
-        conversationId,
-        userName: session?.user?.name || guestName
-      });
+    // Update typing status via API
+    if (conversationId && e.target.value.trim()) {
+      fetch('/api/chat/typing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId,
+          userId: session?.user?.id || guestId,
+          userName: session?.user?.name || guestName,
+          isTyping: true
+        })
+      }).catch(err => console.error('Typing indicator error:', err));
       
       // Clear previous timeout
       if (typingTimeout) {
@@ -235,7 +232,15 @@ export default function CustomerChatButton() {
       
       // Set new timeout to stop typing indicator
       const timeout = setTimeout(() => {
-        socketRef.current?.emit('stop-typing', { conversationId });
+        fetch('/api/chat/typing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conversationId,
+            userId: session?.user?.id || guestId,
+            isTyping: false
+          })
+        }).catch(err => console.error('Stop typing error:', err));
       }, 1000);
       
       setTypingTimeout(timeout);
@@ -279,19 +284,7 @@ export default function CustomerChatButton() {
           <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white p-4 flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-lg">Customer Support</h3>
-              <div className="flex items-center gap-2">
-                {isConnecting ? (
-                  <div className="w-3 h-3 border border-blue-300 rounded-full border-t-transparent animate-spin"></div>
-                ) : (
-                  <div className={`w-2 h-2 rounded-full ${isAdminOnline ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
-                )}
-                <p className="text-xs text-blue-100">
-                  {isConnecting ? 'Connecting...' :
-                   isAdminOnline ? 'Admin is online' : 
-                   lastSeen ? `Last seen ${lastSeen.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}` : 
-                   'Admin is offline'}
-                </p>
-              </div>
+              <p className="text-xs text-blue-100">We typically reply within a few minutes</p>
               {adminTyping && (
                 <p className="text-xs text-green-300 animate-pulse">Admin is typing...</p>
               )}
@@ -415,7 +408,7 @@ export default function CustomerChatButton() {
               />
               <button
                 onClick={sendMessage}
-                disabled={!newMessage.trim() || isSending || isConnecting}
+                disabled={!newMessage.trim() || isSending}
                 className="bg-gradient-to-r from-gray-600 to-gray-700 text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isSending ? (

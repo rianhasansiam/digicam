@@ -3,7 +3,7 @@ import LoginPageClient from './LoginPageClient';
 // Metadata for SEO
 export const metadata = {
   title: "Login - Digicam | Access Your Account",
-  description: "Sign in to your Digicam account to access exclusive fashion collections.",
+  description: "Sign in to your Digicam account to access exclusive camera collections.",
 };
 
 // Simple login page
@@ -12,8 +12,8 @@ export default function LoginPage() {
   const loginData = {
     brandInfo: {
       name: "Digicam",
-      tagline: "Premium Fashion Destination",
-      description: "Welcome back to your premium fashion experience"
+      tagline: "Premium Camera Destination",
+      description: "Welcome back to your premium camera experience"
     },
     formData: {
       title: "Welcome Back",

@@ -428,7 +428,7 @@ const LoginPageClient = ({ loginData }) => {
         <div className="absolute inset-0">
           <Image
             src={loginData.backgroundImage}
-            alt="Fashion Background"
+            alt="Camera Background"
             fill
             className="object-cover"
             priority

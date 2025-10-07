@@ -146,7 +146,7 @@ const GlobalLoadingPage = ({
               Digicam
           </h2>
           <p className="text-gray-600 font-medium">
-            Premium Fashion Store
+            Premium Camera Store
           </p>
         </motion.div>
 

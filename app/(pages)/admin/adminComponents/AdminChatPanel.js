@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import { io } from 'socket.io-client';
 import { Send, MessageCircle, User } from 'lucide-react';
 
 export default function AdminChatPanel() {
@@ -14,13 +13,12 @@ export default function AdminChatPanel() {
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [userTyping, setUserTyping] = useState(false);
   const [messageStatus, setMessageStatus] = useState({});
-  const [onlineUsers, setOnlineUsers] = useState(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [lastMessageCount, setLastMessageCount] = useState(0);
   const messagesEndRef = useRef(null);
-  const socketRef = useRef(null);
+  const pollingIntervalRef = useRef(null);
 
   // Auto scroll to bottom
   const scrollToBottom = () => {
@@ -31,100 +29,73 @@ export default function AdminChatPanel() {
     scrollToBottom();
   }, [messages]);
 
-  // Initialize socket connection
-  useEffect(() => {
-    if (session?.user) {
-      setIsConnecting(true);
-      // Connect to WebSocket
-      socketRef.current = io(window.location.origin, {
-        transports: ['websocket', 'polling']
-      });
+  // Poll for new messages and typing status
+  const pollMessages = useCallback(async () => {
+    if (!selectedConversation) return;
 
-      socketRef.current.on('connect', () => {
-        console.log('Admin connected to chat server');
-        setIsConnecting(false);
-        socketRef.current.emit('join', session.user.id, 'admin');
-      });
-
-      socketRef.current.on('disconnect', () => {
-        setIsConnecting(true);
-      });
-
-      // Listen for new messages
-      socketRef.current.on('new-message', (message) => {
-        if (selectedConversation && message.conversationId === selectedConversation.userId) {
-          setMessages(prev => [...prev, message]);
-          // Auto-mark admin messages as read
-          if (message.senderId !== session.user.id) {
-            setTimeout(() => {
-              socketRef.current.emit('message-read', {
-                messageId: message._id,
-                conversationId: message.conversationId
-              });
-            }, 1000);
-          }
-        }
-      });
-
-      // Listen for new user messages
-      socketRef.current.on('new-user-message', (data) => {
-        // Refresh conversations list and show notification
-        fetchConversations();
-        // Show desktop notification if permission granted
-        if (Notification.permission === 'granted') {
-          new Notification(`New message from ${data.senderName}`, {
-            body: data.message.substring(0, 50) + '...',
-            icon: '/logo.png'
+    try {
+      const msgRes = await fetch(`/api/chat/messages?conversationId=${selectedConversation.userId}`);
+      const msgData = await msgRes.json();
+      
+      if (msgData.success && msgData.messages) {
+        if (msgData.messages.length !== lastMessageCount) {
+          setMessages(msgData.messages);
+          setLastMessageCount(msgData.messages.length);
+          
+          // Auto-mark messages as read
+          await fetch('/api/chat/messages', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ conversationId: selectedConversation.userId })
           });
         }
-      });
+      }
 
-      // Enhanced typing indicators
-      socketRef.current.on('user-typing', (data) => {
-        if (selectedConversation && data.conversationId === selectedConversation.userId) {
-          setUserTyping(true);
-          setTimeout(() => setUserTyping(false), 3000);
-        }
-      });
-      
-      socketRef.current.on('user-stop-typing', (data) => {
-        if (selectedConversation && data.conversationId === selectedConversation.userId) {
-          setUserTyping(false);
-        }
-      });
+      // Check for user typing status
+      const typingRes = await fetch(`/api/chat/typing?conversationId=${selectedConversation.userId}`);
+      const typingData = await typingRes.json();
+      if (typingData.success) {
+        setUserTyping(typingData.isTyping);
+      }
+    } catch (error) {
+      console.error('Polling error:', error);
+    }
+  }, [selectedConversation, lastMessageCount]);
 
-      // Message status updates
-      socketRef.current.on('message-status', (data) => {
-        setMessageStatus(prev => ({
-          ...prev,
-          [data.messageId]: data.status
-        }));
-      });
-
-      // User presence updates
-      socketRef.current.on('user-presence', (data) => {
-        setOnlineUsers(prev => {
-          const newSet = new Set(prev);
-          if (data.online) {
-            newSet.add(data.userId);
-          } else {
-            newSet.delete(data.userId);
-          }
-          return newSet;
-        });
-      });
-
-      // Fetch conversations on mount
+  // Fetch conversations on mount and start polling
+  useEffect(() => {
+    if (session?.user) {
       fetchConversations();
+      
+      // Poll conversations list every 10 seconds
+      const conversationsInterval = setInterval(() => {
+        fetchConversations();
+      }, 10000);
 
       return () => {
-        if (socketRef.current) {
-          socketRef.current.disconnect();
+        clearInterval(conversationsInterval);
+      };
+    }
+  }, [session]);
+
+  // Start polling when conversation is selected
+  useEffect(() => {
+    if (selectedConversation) {
+      // Initial poll
+      pollMessages();
+      
+      // Poll every 3 seconds
+      pollingIntervalRef.current = setInterval(() => {
+        pollMessages();
+      }, 3000);
+
+      return () => {
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
         }
       };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [selectedConversation, pollMessages]);
 
   const fetchConversations = async () => {
     setIsLoading(true);
@@ -179,45 +150,73 @@ export default function AdminChatPanel() {
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation || isSending) return;
 
+    const messageText = newMessage;
+    setNewMessage('');
     setIsSending(true);
+
+    // Optimistic update
+    const optimisticMessage = {
+      _id: `temp-${Date.now()}`,
+      conversationId: selectedConversation.userId,
+      message: messageText,
+      senderId: session.user.id,
+      senderName: 'Support Team',
+      senderRole: 'admin',
+      timestamp: new Date().toISOString(),
+      status: 'sending'
+    };
+    setMessages(prev => [...prev, optimisticMessage]);
+
     try {
       const response = await fetch('/api/chat/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           conversationId: selectedConversation.userId,
-          message: newMessage
+          message: messageText
         })
       });
 
       const data = await response.json();
       
       if (data.success) {
-        // Emit via socket for real-time delivery
-        socketRef.current?.emit('send-message', {
-          conversationId: selectedConversation.userId,
-          message: newMessage,
-          senderId: session.user.id,
-          senderName: 'Support Team'
-        });
-
-      setNewMessage('');
-    }
-  } catch (error) {
-    console.error('Failed to send message:', error);
-  } finally {
-    setIsSending(false);
-  }
-};  // Enhanced typing functionality for admin
+        // Replace optimistic message with real one
+        setMessages(prev => 
+          prev.map(msg => 
+            msg._id === optimisticMessage._id ? data.message : msg
+          )
+        );
+        setLastMessageCount(prev => prev + 1);
+        
+        // Poll immediately
+        pollMessages();
+      } else {
+        setMessages(prev => prev.filter(msg => msg._id !== optimisticMessage._id));
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setMessages(prev => prev.filter(msg => msg._id !== optimisticMessage._id));
+    } finally {
+      setIsSending(false);
+  };
+  
+  // Enhanced typing functionality for admin
   const handleInputChange = (e) => {
     setNewMessage(e.target.value);
     
-    // Emit admin typing event
-    if (socketRef.current && selectedConversation) {
-      socketRef.current.emit('admin-typing', {
-        conversationId: selectedConversation.userId,
-        adminName: 'Support Team'
-      });
+    // Update typing status via API
+    if (selectedConversation && e.target.value.trim()) {
+      fetch('/api/chat/typing', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId: selectedConversation.userId,
+          userId: session.user.id,
+          userName: 'Support Team',
+          isTyping: true,
+          role: 'admin'
+        })
+      }).catch(err => console.error('Typing indicator error:', err));
       
       // Clear previous timeout
       if (typingTimeout) {
@@ -226,9 +225,16 @@ export default function AdminChatPanel() {
       
       // Set new timeout to stop typing indicator
       const timeout = setTimeout(() => {
-        socketRef.current?.emit('admin-stop-typing', { 
-          conversationId: selectedConversation.userId 
-        });
+        fetch('/api/chat/typing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            conversationId: selectedConversation.userId,
+            userId: session.user.id,
+            isTyping: false,
+            role: 'admin'
+          })
+        }).catch(err => console.error('Stop typing error:', err));
       }, 1000);
       
       setTypingTimeout(timeout);
@@ -239,15 +245,6 @@ export default function AdminChatPanel() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
-      // Stop typing indicator immediately
-      if (socketRef.current && selectedConversation) {
-        socketRef.current.emit('admin-stop-typing', { 
-          conversationId: selectedConversation.userId 
-        });
-      }
-      if (typingTimeout) {
-        clearTimeout(typingTimeout);
-      }
     }
   };
 
@@ -267,9 +264,6 @@ export default function AdminChatPanel() {
             <h2 className="text-xl font-semibold flex items-center gap-2">
               <MessageCircle size={24} />
               Customer Chats
-              {isConnecting && (
-                <div className="w-4 h-4 border border-blue-300 rounded-full border-t-transparent animate-spin"></div>
-              )}
             </h2>
             <p className="text-sm text-blue-100 mt-1">
               {isLoading ? 'Loading conversations...' : 
@@ -344,9 +338,6 @@ export default function AdminChatPanel() {
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white font-semibold">
                       {selectedConversation.userName?.[0]?.toUpperCase()}
                     </div>
-                    {onlineUsers.has(selectedConversation.userId) && (
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                    )}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
@@ -456,7 +447,7 @@ export default function AdminChatPanel() {
                   />
                   <button
                     onClick={sendMessage}
-                    disabled={!newMessage.trim() || isSending || isConnecting}
+                    disabled={!newMessage.trim() || isSending}
                     className="bg-gradient-to-r from-gray-500 to-gray-600 text-white p-3 rounded-full hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
                     {isSending ? (

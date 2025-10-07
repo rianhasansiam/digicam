@@ -48,7 +48,7 @@ export default function Navbar() {
     },
     {
       name: 'New Arrivals',
-      description: 'Latest fashion trends',
+      description: 'Latest camera models',
       icon: '✨',
       count: 0,
       href: '/allProducts?sort=newest'

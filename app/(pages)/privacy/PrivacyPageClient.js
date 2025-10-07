@@ -191,7 +191,7 @@ const PrivacyPageClient = () => {
   'Privacy Officer: privacy@digicam.com',
   'General Inquiries: support@digicam.com',
         'Phone: +1 (555) 123-4567',
-        'Address: 123 Fashion Street, Style City, SC 12345',
+        'Address: 123 Camera Street, Photo City, PC 12345',
         'We will respond to your inquiries within a reasonable timeframe.'
       ]
     }
