@@ -29,7 +29,7 @@ const AddProductModal = ({ isOpen, onClose, categories }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [imageUploading, setImageUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [availableSizes] = useState(['Full Frame', 'APS-C', 'Micro Four Thirds', 'Medium Format', '1-inch', '1/2.3-inch']);
+  const [availableSizes] = useState(['Used', 'Used Like New', 'New']);
   const [availableStyles] = useState(['Digital Cameras', 'Handycams / Camcorders', 'Film Cameras', 'Bridge Cameras', 'DSLR Cameras', 'Mirrorless Cameras', 'Action Cameras','Instant Cameras','Disposable Cameras','Accessories (Batteries, Chargers, SD Cards, etc.)']);
   const [availableColors] = useState([
     { name: 'Black', value: 'Black', bg: 'bg-black', border: 'border-black' },
@@ -542,7 +542,7 @@ const AddProductModal = ({ isOpen, onClose, categories }) => {
             {/* Sizes Section */}
             <div className="bg-gradient-to-r from-purple-50/50 to-pink-50/40 p-6 rounded-xl border border-purple-100/50">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Sensor Type*
+                Camera Type*
               </h3>
               <div className="flex flex-wrap gap-3">
                 {availableSizes.map((size) => (

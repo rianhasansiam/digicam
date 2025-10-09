@@ -53,7 +53,7 @@ const SizeFilter = ({ products = [] }) => {
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex items-center justify-between w-full text-left font-semibold text-gray-900 mb-4"
       >
-        <span>Sizes</span>
+        <span>Camera Type</span>
         {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
       </button>
       
@@ -82,7 +82,7 @@ const SizeFilter = ({ products = [] }) => {
               onClick={() => setSizes([])}
               className="text-sm text-red-600 hover:text-red-800 transition-colors"
             >
-              Clear all sizes
+              Clear camera type
             </button>
           )}
         </div>

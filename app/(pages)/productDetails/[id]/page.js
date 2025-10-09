@@ -552,7 +552,7 @@ export default function ProductDetailPage({ params }) {
           {product.sizes && product.sizes.length > 0 && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <label className="block text-sm font-semibold text-gray-800 mb-3">
-                Size Guide
+                Camera Type
                 {selectedSize && <span className="text-gray-500 font-normal ml-2">- {selectedSize}</span>}
               </label>
               <div className="flex flex-wrap gap-3">

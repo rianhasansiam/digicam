@@ -82,7 +82,7 @@ const EnhancedFilters = ({ categoriesData, products }) => {
             ))}
             {filters.sizes.map(size => (
               <span key={size} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-black text-white">
-                Size {size}
+                {size}
               </span>
             ))}
             {(filters.priceRange.min > 0 || filters.priceRange.max < maxPrice) && (

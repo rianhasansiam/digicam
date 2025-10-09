@@ -38,9 +38,7 @@ export default function AboutPage() {
       title: "Our Story",
       subtitle: "A Journey of Photography Excellence",
       content: [
-        "Digicam Market was founded in 2025 with a vision to provide professional photography equipment that's accessible to everyone. We believe that quality cameras and expert guidance should empower every photographer's creative vision.",
-        "Our journey began with a passion for photography and a commitment to helping others capture their perfect moments. From DSLR cameras to mirrorless systems, lenses, and accessories, we carefully curate each product with attention to detail and dedication to excellence.",
-        "Today, we continue to grow as Bangladesh's trusted camera retailer while staying true to our core values of quality products, expert knowledge, and exceptional customer service."
+        "Welcome to Digicam Market . A place where every camera tells a story. We specialize in vintage and digital cameras, each carefully selected for those who appreciate the charm of old-school craftsmanship and the joy of photography. From classic Canon IXUS and Sony Cybershot models to rare point-and-shoot gems, we bring you cameras that once captured the world — and still can. Every piece we offer has its own history, its own feel, and a quality that modern devices can’t quite replace. Whether you’re a collector, creator, or beginner, our goal is to help you find a camera that inspires you to see beauty through a timeless lens. Because to us, these aren’t just cameras — they’re memories waiting to happen again."
       ],
       image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80"
     },
