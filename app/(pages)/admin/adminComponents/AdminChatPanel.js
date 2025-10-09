@@ -17,6 +17,7 @@ export default function AdminChatPanel() {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [lastMessageCount, setLastMessageCount] = useState(0);
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
   const messagesEndRef = useRef(null);
   const pollingIntervalRef = useRef(null);
 
@@ -198,6 +199,7 @@ export default function AdminChatPanel() {
       setMessages(prev => prev.filter(msg => msg._id !== optimisticMessage._id));
     } finally {
       setIsSending(false);
+    }
   };
   
   // Enhanced typing functionality for admin
