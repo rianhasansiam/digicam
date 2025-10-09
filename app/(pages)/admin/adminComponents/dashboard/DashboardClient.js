@@ -468,7 +468,7 @@ const DashboardClient = ({ analytics, businessTracking, refetchBusiness }) => {
       </motion.div>
 
       {/* Quick Actions */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6"
@@ -499,7 +499,7 @@ const DashboardClient = ({ analytics, businessTracking, refetchBusiness }) => {
             View Analytics
           </button>
         </div>
-      </motion.div>
+      </motion.div> */}
 
       {/* Revenue Details Modal */}
       {showRevenueDetails && (
