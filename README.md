@@ -1,4 +1,4 @@
-# 🛍️ Digicam - Modern E-Commerce Platform
+# 🛍️ DigiCam Market - Modern E-Commerce Platform
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 
 A full-stack, production-ready e-commerce platform built with Next.js 15, featuring secure authentication, real-time cart management, admin dashboard, and comprehensive API security.
 
-[Live Demo](https://digicam.com) • [Report Bug](https://github.com/rianhasansiam/digicam/issues) • [Request Feature](https://github.com/rianhasansiam/digicam/issues)
+[Live Demo](https://digicammarket.com) • [Report Bug](https://github.com/rianhasansiam/digicam/issues) • [Request Feature](https://github.com/rianhasansiam/digicam/issues)
 
 </div>
 

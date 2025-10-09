@@ -143,10 +143,10 @@ const GlobalLoadingPage = ({
           className="space-y-4"
         >
           <h2 className="text-2xl font-bold text-gray-800">
-              Digicam
+              Digicam Market
           </h2>
           <p className="text-gray-600 font-medium">
-            Premium Camera Store
+            Your Vintage Camera Destination.
           </p>
         </motion.div>
 

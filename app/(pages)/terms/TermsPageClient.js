@@ -22,9 +22,9 @@ const TermsPageClient = () => {
       title: 'Acceptance of Terms',
       icon: UserCheck,
       content: [
-  'By accessing and using the Digicam website and services, you accept and agree to be bound by the terms and provision of this agreement.',
+  'By accessing and using the Digicam Market website and services, you accept and agree to be bound by the terms and provision of this agreement.',
         'If you do not agree to abide by the above, please do not use this service.',
-  'These terms constitute a legally binding agreement between you and Digicam.'
+  'These terms constitute a legally binding agreement between you and Digicam Market.'
       ]
     },
     {
@@ -32,7 +32,7 @@ const TermsPageClient = () => {
       title: 'Definitions',
       icon: FileText,
       content: [
-  '"We", "us", "our" refers to Digicam and its affiliates.',
+  '"We", "us", "our" refers to Digicam Market and its affiliates.',
         '"You", "your" refers to the user or customer accessing our services.',
         '"Products" refers to all items available for purchase on our platform.',
         '"Services" refers to all services provided through our website and platform.'
@@ -55,11 +55,11 @@ const TermsPageClient = () => {
       title: 'Orders and Purchases',
       icon: CreditCard,
       content: [
-  'All orders are subject to acceptance by Digicam.',
+  'All orders are subject to acceptance by Digicam Market.',
         'We reserve the right to refuse or cancel any order for any reason.',
         'Prices are subject to change without notice until order confirmation.',
-        'Payment must be received before order processing begins.',
-        'Order confirmation does not guarantee product availability.'
+        'To confirm and secure your order, an advance payment is required.',
+        'This advance guarantees priority processing and reserves your selected item exclusively for you.'
       ]
     },
     {
@@ -69,7 +69,7 @@ const TermsPageClient = () => {
       content: [
         'Shipping costs and delivery times vary by location and shipping method.',
         'We are not responsible for delays caused by shipping carriers.',
-        'Risk of loss and title for products pass to you upon delivery.',
+        'Risk of loss and title for products pass to us upon delivery to the carrier.',
         'You must inspect packages upon delivery and report any damage immediately.',
         'Delivery attempts are made during regular business hours.'
       ]
@@ -79,8 +79,8 @@ const TermsPageClient = () => {
       title: 'Returns and Exchanges',
       icon: Clock,
       content: [
-        'Returns must be initiated within 30 days of purchase.',
-        'Items must be in original condition with tags attached.',
+        'Returns are accepted only if the product arrives in a condition different from what was promised.',
+        'The item is found to be non-functional upon inspection.',
         'Custom or personalized items cannot be returned unless defective.',
         'Return shipping costs are the responsibility of the customer unless the item is defective.',
         'Refunds will be processed within 5-10 business days after we receive the returned item.'
@@ -91,7 +91,7 @@ const TermsPageClient = () => {
       title: 'Intellectual Property',
       icon: Scale,
       content: [
-  'All content on this website is the property of Digicam or its licensors.',
+  'All content on this website is the property of Digicam Market or its licensors.',
         'You may not reproduce, distribute, or create derivative works without permission.',
         'Product names, logos, and brands are trademarks of their respective owners.',
         'Unauthorized use of our intellectual property may result in legal action.'
@@ -114,7 +114,7 @@ const TermsPageClient = () => {
       title: 'Limitation of Liability',
       icon: Shield,
       content: [
-  'Digicam shall not be liable for any indirect, incidental, or consequential damages.',
+  'Digicam Market shall not be liable for any indirect, incidental, or consequential damages.',
         'Our total liability shall not exceed the amount paid by you for the specific product or service.',
         'We do not warrant that our service will be uninterrupted or error-free.',
         'Some jurisdictions do not allow the exclusion of certain warranties or limitations of liability.'
@@ -148,7 +148,7 @@ const TermsPageClient = () => {
       icon: Mail,
       content: [
         'If you have any questions about these Terms and Conditions, please contact us:',
-  'Email: legal@digicam.com',
+  'Email: legal@digicammarket.com',
         'Phone: +1 (555) 123-4567',
         'Address: 123 Camera Street, Photo City, PC 12345'
       ]
@@ -235,7 +235,7 @@ const TermsPageClient = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
             <div className="flex items-center justify-center space-x-2 text-white">
               <Mail className="w-5 h-5" />
-                <span className="text-sm">legal@digicam.com</span>
+                <span className="text-sm">legal@digicammarket.com</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-white">
               <Phone className="w-5 h-5" />

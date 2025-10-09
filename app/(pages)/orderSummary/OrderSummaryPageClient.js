@@ -74,7 +74,7 @@ const OrderSummaryPageClient = ({ orderData }) => {
     doc.setTextColor(255, 255, 255);
     doc.setFontSize(28);
     doc.setFont('helvetica', 'bold');
-    doc.text('DIGICAM', 20, 22);
+    doc.text('DIGICAM MARKET', 20, 22);
     
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
@@ -254,16 +254,16 @@ const OrderSummaryPageClient = ({ orderData }) => {
     doc.setTextColor(...colors.text);
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
-    doc.text('Thank you for choosing Digicam!', pageWidth / 2, pageHeight - 27, { align: 'center' });
+    doc.text('Thank you for choosing Digicam Market!', pageWidth / 2, pageHeight - 27, { align: 'center' });
     
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(...colors.mediumGray);
-    doc.text('Questions? Contact us: support@digicam.com | +880 1234-567890', pageWidth / 2, pageHeight - 20, { align: 'center' });
-    doc.text('www.digicam.com | Bangladesh\'s Premium Camera Store', pageWidth / 2, pageHeight - 14, { align: 'center' });
+    doc.text('Questions? Contact us: support@digicammarket.com | +880 1234-567890', pageWidth / 2, pageHeight - 20, { align: 'center' });
+    doc.text('www.digicammarket.com | Bangladesh\'s Premium Camera Store', pageWidth / 2, pageHeight - 14, { align: 'center' });
 
     // Save the PDF
-    doc.save(`Digicam_Order_${orderData.orderId}.pdf`);
+    doc.save(`DigiCamMarket_Order_${orderData.orderId}.pdf`);
   };
 
   const StatusIcon = getStatusIcon(orderData.status);

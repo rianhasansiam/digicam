@@ -4,7 +4,8 @@ import { getCollection } from '../../../../lib/mongodb';
 // PUT - Update category by ID
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const categories = await getCollection('allCategories');
     const body = await request.json();
     
@@ -46,7 +47,8 @@ export async function PUT(request, { params }) {
 // DELETE - Delete category by ID
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const categories = await getCollection('allCategories');
     
     if (!id) {
@@ -84,7 +86,8 @@ export async function DELETE(request, { params }) {
 // GET - Get single category by ID
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const categories = await getCollection('allCategories');
     
     if (!id) {

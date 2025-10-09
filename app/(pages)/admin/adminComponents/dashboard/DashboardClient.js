@@ -230,7 +230,7 @@ const DashboardClient = ({ analytics, businessTracking, refetchBusiness }) => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-gray-800 to-black rounded-2xl p-4 sm:p-6 lg:p-8 text-white"
       >
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">Welcome to Digicam Admin Dashboard</h1>
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2">Welcome to Digicam Market Admin Dashboard</h1>
         <p className="text-gray-300 text-sm sm:text-base lg:text-lg">Here&apos;s what&apos;s happening with your camera business today.</p>
         <div className="flex flex-col sm:flex-row items-start sm:items-center mt-4 space-y-2 sm:space-y-0 sm:space-x-4">
           <div className="flex items-center text-gray-300 text-sm">

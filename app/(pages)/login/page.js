@@ -2,8 +2,8 @@ import LoginPageClient from './LoginPageClient';
 
 // Metadata for SEO
 export const metadata = {
-  title: "Login - Digicam | Access Your Account",
-  description: "Sign in to your Digicam account to access exclusive camera collections.",
+  title: "Login - Digicam Market | Access Your Account",
+  description: "Sign in to your Digicam Market account to access exclusive camera collections.",
 };
 
 // Simple login page
@@ -11,7 +11,7 @@ export default function LoginPage() {
   // Login page data (server-side)
   const loginData = {
     brandInfo: {
-      name: "Digicam",
+      name: "Digicam Market",
       tagline: "Premium Camera Destination",
       description: "Welcome back to your premium camera experience"
     },

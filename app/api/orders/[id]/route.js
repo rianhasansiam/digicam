@@ -5,7 +5,8 @@ import { ObjectId } from 'mongodb';
 // PUT - Update order status
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const orders = await getCollection('allOrders');
     
     const body = await request.json();
@@ -68,7 +69,8 @@ export async function PUT(request, { params }) {
 // GET - Get specific order details
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const orders = await getCollection('allOrders');
     
     if (!id) {
@@ -106,7 +108,8 @@ export async function GET(request, { params }) {
 // DELETE - Delete specific order
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const orders = await getCollection('allOrders');
     
     if (!id) {

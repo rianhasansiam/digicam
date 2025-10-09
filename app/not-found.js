@@ -3,8 +3,8 @@ import Image from 'next/image';
 
 // Metadata for 404 page
 export const metadata = {
-  title: "Page Not Found - Digicam | Premium Camera Store",
-  description: "The page you're looking for doesn't exist. Continue shopping at Digicam for premium cameras and photography equipment.",
+  title: "Page Not Found - Digicam Market | Premium Camera Store",
+  description: "The page you're looking for doesn't exist. Continue shopping at Digicam Market for premium cameras and photography equipment.",
   robots: "noindex, nofollow",
 };
 

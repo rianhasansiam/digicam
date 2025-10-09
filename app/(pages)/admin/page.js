@@ -28,13 +28,13 @@ import AllMessages from './adminComponents/allMessages/AllMessages';
 
 // Metadata for SEO - Admin Panel
 export const metadata = {
-  title: "Admin Panel - Digicam | Manage Your Camera Business",
-  description: "Comprehensive admin dashboard for managing products, orders, customers, and analytics for Digicam premium camera store.",
+  title: "Admin Panel - Digicam Market | Manage Your Camera Business",
+  description: "Comprehensive admin dashboard for managing products, orders, customers, and analytics for Digicam Market premium camera store.",
   keywords: "admin panel, dashboard, camera store management, inventory, orders, customers, analytics",
   robots: "noindex, nofollow", // Admin panel should not be indexed
   openGraph: {
-    title: "Admin Panel - Digicam",
-    description: "Business management dashboard for Digicam camera store",
+    title: "Admin Panel - Digicam Market",
+    description: "Business management dashboard for Digicam Market camera store",
     type: "website",
   },
 };

@@ -16,7 +16,8 @@ export async function PUT(request, { params }) {
       return forbiddenResponse('Only admins can update products');
     }
 
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const products = await getCollection('allProducts');
     const body = await request.json();
     
@@ -34,6 +35,7 @@ export async function PUT(request, { params }) {
     
     // Update only provided fields
     if (body.name) updateData.name = body.name.trim();
+    if (body.brand) updateData.brand = body.brand.trim();
     if (body.category) updateData.category = body.category.trim();
     if (body.style) updateData.style = body.style.trim();
     if (body.price !== undefined) updateData.price = Number(body.price);
@@ -102,7 +104,8 @@ export async function DELETE(request, { params }) {
       return forbiddenResponse('Only admins can delete products');
     }
 
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const products = await getCollection('allProducts');
     
     if (!id) {
@@ -148,7 +151,8 @@ export async function GET(request, { params }) {
     const originCheck = checkOrigin(request);
     if (originCheck) return originCheck;
 
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const products = await getCollection('allProducts');
     
     if (!id) {

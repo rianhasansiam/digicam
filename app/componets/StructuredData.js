@@ -4,14 +4,14 @@ export default function StructuredData() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-  "name": "Digicam",
-  "url": "https://digicam.com",
-  "logo": "https://digicam.com/logo.png",
+  "name": "Digicam Market",
+  "url": "https://digicammarket.com",
+  "logo": "https://digicammarket.com/logo.png",
   "description": "Premium camera store offering quality cameras and photography equipment for everyone.",
     "sameAs": [
-  "https://facebook.com/digicam",
-  "https://twitter.com/digicam", 
-  "https://instagram.com/digicam"
+  "https://facebook.com/digicammarket",
+  "https://twitter.com/digicammarket", 
+  "https://instagram.com/digicammarket"
     ],
     "address": {
       "@type": "PostalAddress",
@@ -25,11 +25,11 @@ export default function StructuredData() {
       "@type": "ContactPoint",
   "telephone": "+1-555-123-4567",
   "contactType": "customer service",
-  "email": "contact@digicam.com"
+  "email": "contact@digicammarket.com"
     },
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-  "name": "Digicam Camera Collection",
+  "name": "Digicam Market Camera Collection",
       "itemListElement": [
         {
           "@type": "Offer",

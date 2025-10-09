@@ -1,4 +1,3 @@
-
 // Home page - 🚀 NEXT.JS 15 Optimized Server Component
 import { Suspense } from 'react'
 import StructuredData from './componets/StructuredData';
@@ -12,11 +11,11 @@ export async function generateMetadata() {
     const homeData = await getHomePageData()
     
     return {
-      title: "Digicam - Premium Camera Store | Digital Cameras & Photography Equipment",
+      title: "Digicam Market - Premium Camera Store | Digital Cameras & Photography Equipment",
       description: `Discover ${homeData.stats.totalProducts} professional cameras across ${homeData.stats.totalCategories} categories. Shop quality cameras with ${homeData.stats.averageRating.toFixed(1)}-star average rating. Free shipping on orders over ৳10,000.`,
-      keywords: "cameras, DSLR, mirrorless, photography, digital cameras, camera lenses, photography equipment, online camera store, Digicam",
+      keywords: "cameras, DSLR, mirrorless, photography, digital cameras, camera lenses, photography equipment, online camera store, Digicam Market",
       openGraph: {
-        title: "Digicam - Premium Camera Store",
+        title: "Digicam Market - Premium Camera Store",
         description: `Discover ${homeData.stats.totalProducts} professional cameras with ${homeData.stats.averageRating.toFixed(1)}-star quality rating.`,
         type: "website",
         url: "https://digicammarket.com",
@@ -25,13 +24,13 @@ export async function generateMetadata() {
             url: homeData.featuredProducts?.[0]?.primaryImage || "/hero.jpg",
             width: 1200,
             height: 630,
-            alt: "Digicam Premium Camera Collection"
+            alt: "Digicam Market Premium Camera Collection"
           }
         ]
       },
       twitter: {
         card: "summary_large_image",
-        title: "Digicam - Premium Camera Store",
+        title: "Digicam Market - Premium Camera Store",
         description: `Shop ${homeData.stats.totalProducts} professional cameras`,
         images: [homeData.featuredProducts?.[0]?.primaryImage || "/hero.jpg"]
       }
@@ -39,12 +38,12 @@ export async function generateMetadata() {
   } catch (error) {
     // Fallback metadata if data fetching fails
     return {
-      title: "Digicam - Premium Camera Store | Digital Cameras & Photography Equipment",
-      description: "Discover professional cameras and photography equipment at Digicam. Shop quality DSLR, mirrorless cameras, lenses, and accessories. Free shipping on orders over ৳10,000.",
-      keywords: "cameras, DSLR, mirrorless, photography, digital cameras, camera lenses, photography equipment, online camera store, Digicam",
+      title: "Digicam Market - Premium Camera Store | Digital Cameras & Photography Equipment",
+      description: "Discover professional cameras and photography equipment at Digicam Market. Shop quality DSLR, mirrorless cameras, lenses, and accessories. Free shipping on orders over ৳10,000.",
+      keywords: "cameras, DSLR, mirrorless, photography, digital cameras, camera lenses, photography equipment, online camera store, Digicam Market",
       openGraph: {
-        title: "Digicam - Premium Camera Store",
-        description: "Discover professional cameras and photography equipment at Digicam. Quality cameras for photographers of all levels.",
+        title: "Digicam Market - Premium Camera Store",
+        description: "Discover professional cameras and photography equipment at Digicam Market. Quality cameras for photographers of all levels.",
         type: "website",
         url: "https://digicammarket.com",
         images: [
@@ -52,14 +51,14 @@ export async function generateMetadata() {
             url: "/hero.jpg",
             width: 1200,
             height: 630,
-            alt: "Digicam Premium Camera Collection"
+            alt: "Digicam Market Premium Camera Collection"
           }
         ]
       },
       twitter: {
         card: "summary_large_image",
-        title: "Digicam - Premium Camera Store",
-        description: "Discover professional cameras and photography equipment at Digicam.",
+        title: "Digicam Market - Premium Camera Store",
+        description: "Discover professional cameras and photography equipment at Digicam Market.",
         images: ["/hero.jpg"]
       }
     }
@@ -72,7 +71,7 @@ export default function Home() {
       <StructuredData />
       <Suspense fallback={
         <GlobalLoadingPage 
-          message="Loading premium collection..." 
+          message="Bringing Classics to Life..." 
           showLogo={true}
         />
       }>

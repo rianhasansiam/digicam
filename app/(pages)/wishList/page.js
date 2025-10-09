@@ -1,9 +1,9 @@
 import WishListPageClient from './WishListPageClient';
 
 export const metadata = {
-  title: 'My Wishlist - Digicam | Save Your Favorite Items',
-  description: 'Keep track of your favorite products from Digicam. Manage your wishlist and add items to cart when ready to purchase.',
-  keywords: 'wishlist, favorites, Digicam, save items, cameras, photography equipment',
+  title: 'My Wishlist - Digicam Market | Save Your Favorite Items',
+  description: 'Keep track of your favorite products from Digicam Market. Manage your wishlist and add items to cart when ready to purchase.',
+  keywords: 'wishlist, favorites, Digicam Market, save items, cameras, photography equipment',
 };
 
 export default function WishListPage() {

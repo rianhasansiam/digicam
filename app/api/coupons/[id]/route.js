@@ -4,7 +4,8 @@ import { getCollection } from '../../../../lib/mongodb';
 // PUT - Update coupon by ID
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const coupons = await getCollection('allCoupons');
     const body = await request.json();
 
@@ -46,7 +47,8 @@ export async function PUT(request, { params }) {
 // DELETE - Delete coupon by ID
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const coupons = await getCollection('allCoupons');
 
     if (!id) {

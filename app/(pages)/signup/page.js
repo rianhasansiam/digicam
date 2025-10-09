@@ -2,8 +2,8 @@ import SignupPageClient from './SignupPageClient';
 
 // Metadata for SEO
 export const metadata = {
-  title: "Sign Up - Digicam | Join Our Camera Community",
-  description: "Create your Digicam account to access exclusive camera collections.",
+  title: "Sign Up - Digicam Market | Join Our Camera Community",
+  description: "Create your Digicam Market account to access exclusive camera collections.",
 };
 
 // Simple signup page
@@ -11,11 +11,11 @@ export default function SignupPage() {
   // Signup page data (server-side)
   const signupData = {
     brandInfo: {
-  name: "Digicam",
+  name: "Digicam Market",
       tagline: "Premium Camera Community"
     },
     formData: {
-  title: "Join Digicam",
+  title: "Join Digicam Market",
       subtitle: "Create your account",
       firstNamePlaceholder: "Enter your first name",
       lastNamePlaceholder: "Enter your last name",

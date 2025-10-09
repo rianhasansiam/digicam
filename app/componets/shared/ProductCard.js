@@ -234,6 +234,15 @@ const ProductCard = memo(({
           </div>
         </div>
         
+        {/* Brand Badge */}
+        {product.brand && (
+          <div className="mb-2">
+            <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 text-xs font-semibold rounded">
+              {product.brand}
+            </span>
+          </div>
+        )}
+        
         <p className="text-gray-600 text-sm mb-3 line-clamp-2 flex-grow">
           {product.shortDescription || product.description}
         </p>

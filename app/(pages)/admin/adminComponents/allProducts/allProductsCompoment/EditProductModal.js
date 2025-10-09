@@ -12,6 +12,7 @@ const EditProductModal = ({ isOpen, onClose, categories, product }) => {
     name: '',
     category: '',
     style: '',
+    brand: '',
     price: '',
     originalPrice: '',
     stock: '',
@@ -29,7 +30,7 @@ const EditProductModal = ({ isOpen, onClose, categories, product }) => {
   const [imageUploading, setImageUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [availableSizes] = useState(['Full Frame', 'APS-C', 'Micro Four Thirds', 'Medium Format', '1-inch', '1/2.3-inch']);
-  const [availableStyles] = useState(['DSLR', 'Mirrorless', 'Point & Shoot', 'Action Camera', 'Film Camera', 'Instant Camera']);
+  const [availableStyles] = useState(['Digital Cameras', 'Handycams / Camcorders', 'Film Cameras', 'Bridge Cameras', 'DSLR Cameras', 'Mirrorless Cameras', 'Action Cameras','Instant Cameras','Disposable Cameras','Accessories (Batteries, Chargers, SD Cards, etc.)']);
   const [availableColors] = useState([
     { name: 'Black', value: 'Black', bg: 'bg-black', border: 'border-black' },
     { name: 'Silver', value: 'Silver', bg: 'bg-gray-300', border: 'border-gray-300' },
@@ -55,6 +56,7 @@ const EditProductModal = ({ isOpen, onClose, categories, product }) => {
         name: product.name || '',
         category: product.category || '',
         style: product.style || '',
+        brand: product.brand || '',
         price: product.price?.toString() || '',
         originalPrice: product.originalPrice?.toString() || '',
         stock: product.stock?.toString() || '',
@@ -81,6 +83,7 @@ const EditProductModal = ({ isOpen, onClose, categories, product }) => {
         name: '',
         category: '',
         style: '',
+        brand: '',
         price: '',
         originalPrice: '',
         stock: '',
@@ -103,6 +106,7 @@ const EditProductModal = ({ isOpen, onClose, categories, product }) => {
   const validateForm = () => {
     const errors = {};
     if (!formData.name.trim()) errors.name = 'Product name is required';
+    if (!formData.brand.trim()) errors.brand = 'Brand name is required';
     if (!formData.category) errors.category = 'Category is required';
     if (!formData.style) errors.style = 'Style is required';
     if (!formData.price) errors.price = 'Price is required';
@@ -370,6 +374,32 @@ const EditProductModal = ({ isOpen, onClose, categories, product }) => {
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Brand Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Brand *
+                </label>
+                <input
+                  type="text"
+                  name="brand"
+                  value={formData.brand}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
+                    formErrors.brand ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="e.g., Canon, Nikon, Sony, Fujifilm, Panasonic"
+                />
+                {formErrors.brand && (
+                  <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <AlertCircle size={14} />
+                    {formErrors.brand}
+                  </p>
+                )}
+                <p className="mt-1 text-xs text-gray-500">
+                  Enter the manufacturer or brand name of the camera
+                </p>
               </div>
 
               {/* Style and Prices */}

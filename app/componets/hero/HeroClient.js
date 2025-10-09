@@ -154,21 +154,21 @@ const HeroClient = ({
                     <div className="relative z-10 flex flex-col items-center space-y-4">
                       <div className="flex space-x-4">
                         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-4xl backdrop-blur-sm">
-                          👔
+                          📹
                         </div>
                         <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-4xl backdrop-blur-sm">
-                          👗
+                          📷
                         </div>
                       </div>
                       <div className="flex space-x-4">
                         <div className="w-12 h-12 bg-white/15 rounded-lg flex items-center justify-center text-3xl backdrop-blur-sm">
-                          👟
+                          📸
                         </div>
                         <div className="w-12 h-12 bg-white/15 rounded-lg flex items-center justify-center text-3xl backdrop-blur-sm">
-                          👜
+                          🎥
                         </div>
                         <div className="w-12 h-12 bg-white/15 rounded-lg flex items-center justify-center text-3xl backdrop-blur-sm">
-                          ⌚
+                          💡
                         </div>
                       </div>
                     </div>

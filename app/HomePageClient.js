@@ -42,7 +42,7 @@ export default function HomePageClient() {
   if (isLoading) {
     return (
       <GlobalLoadingPage 
-        message="Loading premium collection..." 
+        message="Bringing Classics to Life..." 
         showLogo={true}
       />
     );
@@ -73,22 +73,22 @@ export default function HomePageClient() {
         {
           type: 'organization',
           data: {
-            name: 'DigiCam',
+            name: 'Digicam Market',
             url: 'https://digicammarket.com',
             logo: 'https://digicammarket.com/logo.png',
             description: 'Premium camera store offering professional photography equipment and accessories',
             phone: '+1-800-DIGICAM',
             socialMedia: [
-              'https://facebook.com/digicam',
-              'https://twitter.com/digicam',
-              'https://instagram.com/digicam'
+              'https://facebook.com/digicammarket',
+              'https://twitter.com/digicammarket',
+              'https://instagram.com/digicammarket'
             ]
           }
         },
         {
           type: 'website',
           data: {
-            name: 'DigiCam - Premium Camera Store',
+            name: 'Digicam Market - Premium Camera Store',
             url: 'https://digicammarket.com',
             description: 'Discover professional cameras, lenses, and photography equipment. Quality gear for photographers of all levels.'
           }

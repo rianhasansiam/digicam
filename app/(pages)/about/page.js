@@ -2,19 +2,19 @@ import AboutPageClient from './AboutPageClient';
 
 // Metadata for SEO
 export const metadata = {
-  title: "About Us - Digicam | Professional Camera Store Since 2025",
-  description: "Discover the story behind Digicam and our commitment to professional photography equipment. Learn about our journey, values, and expertise since 2025.",
-  keywords: "about Digicam, camera store, photography equipment, professional cameras, camera shop history, DSLR store",
+  title: "About Us - Digicam Market | Professional Camera Store Since 2025",
+  description: "Discover the story behind Digicam Market and our commitment to professional photography equipment. Learn about our journey, values, and expertise since 2025.",
+  keywords: "about Digicam Market, camera store, photography equipment, professional cameras, camera shop history, DSLR store",
   openGraph: {
-    title: "About Us - Digicam | Professional Camera Store",
-    description: "Discover the story behind Digicam and our commitment to professional photography equipment.",
+    title: "About Us - Digicam Market | Professional Camera Store",
+    description: "Discover the story behind Digicam Market and our commitment to professional photography equipment.",
     type: "website",
     images: [
       {
         url: "https://images.unsplash.com/photo-1606240724602-5b21f896eae8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
         width: 1200,
         height: 630,
-        alt: "Digicam Camera Store"
+        alt: "Digicam Market Camera Store"
       }
     ]
   },
@@ -28,7 +28,7 @@ export default function AboutPage() {
   // Company information (server-side data)
   const aboutData = {
     hero: {
-      title: "About Digicam",
+      title: "About Digicam Market",
       subtitle: "Professional Photography Equipment Since 2025",
       description: "We empower photographers to capture their vision with premium cameras and expert guidance.",
       backgroundImage: "https://images.unsplash.com/photo-1606240724602-5b21f896eae8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
@@ -38,7 +38,7 @@ export default function AboutPage() {
       title: "Our Story",
       subtitle: "A Journey of Photography Excellence",
       content: [
-        "Digicam was founded in 2025 with a vision to provide professional photography equipment that's accessible to everyone. We believe that quality cameras and expert guidance should empower every photographer's creative vision.",
+        "Digicam Market was founded in 2025 with a vision to provide professional photography equipment that's accessible to everyone. We believe that quality cameras and expert guidance should empower every photographer's creative vision.",
         "Our journey began with a passion for photography and a commitment to helping others capture their perfect moments. From DSLR cameras to mirrorless systems, lenses, and accessories, we carefully curate each product with attention to detail and dedication to excellence.",
         "Today, we continue to grow as Bangladesh's trusted camera retailer while staying true to our core values of quality products, expert knowledge, and exceptional customer service."
       ],
@@ -84,12 +84,12 @@ export default function AboutPage() {
     
     team: {
   title: "Meet Our Team",
-  subtitle: "The Creative Minds Behind Digicam",
+  subtitle: "The Creative Minds Behind Digicam Market",
       members: [
         {
           name: "Sarah Johnson",
           role: "Founder & CEO",
-          bio: "Leading Digicam with vision and passion for premium cameras.",
+          bio: "Leading Digicam Market with vision and passion for premium cameras.",
           image: "https://images.unsplash.com/photo-1494790108755-2616b612b17c?w=400&h=400&fit=crop&auto=format",
           social: {
             linkedin: "https://linkedin.com/in/sarah-johnson",

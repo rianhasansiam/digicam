@@ -121,6 +121,7 @@ export const userSlice = createSlice({
           itemToAdd = {
             id: product._id,
             name: product.name,
+            brand: product.brand || '',
             price: product.price,
             image: product.imageUrl,
             quantity,
@@ -138,6 +139,7 @@ export const userSlice = createSlice({
           itemToAdd = {
             id: payload.id,
             name: payload.name,
+            brand: payload.brand || '',
             price: payload.price,
             image: payload.image,
             quantity: payload.quantity || 1,

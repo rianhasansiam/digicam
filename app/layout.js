@@ -25,12 +25,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Digicam - Premium Camera Store",
-  description: "Discover professional cameras and photography equipment at Digicam. Quality cameras and accessories for photographers of all levels.",
-  keywords: "cameras, DSLR, mirrorless, photography, digital cameras, camera lenses, photography equipment, online camera store, Digicam",
-  authors: [{ name: "Digicam" }],
-  creator: "Digicam",
-  publisher: "Digicam",
+  title: "Digicam Market - Premium Camera Store",
+  description: "Discover professional cameras and photography equipment at Digicam Market. Quality cameras and accessories for photographers of all levels.",
+  keywords: "cameras, DSLR, mirrorless, photography, digital cameras, camera lenses, photography equipment, online camera store, Digicam Market",
+  authors: [{ name: "Digicam Market" }],
+  creator: "Digicam Market",
+  publisher: "Digicam Market",
   formatDetection: {
     email: false,
     address: false,

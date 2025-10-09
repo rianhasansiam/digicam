@@ -5,7 +5,8 @@ import { ObjectId } from 'mongodb';
 // DELETE - Delete specific contact by ID
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     
     // Validate ObjectId
     if (!ObjectId.isValid(id)) {
@@ -45,7 +46,8 @@ export async function DELETE(request, { params }) {
 // PATCH - Update contact status (mark as read/unread)
 export async function PATCH(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     
     // Validate ObjectId
     if (!ObjectId.isValid(id)) {

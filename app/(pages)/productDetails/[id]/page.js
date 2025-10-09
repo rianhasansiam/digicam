@@ -325,8 +325,8 @@ export default function ProductDetailPage({ params }) {
               description: product.description,
               image: product.images?.[0] || product.primaryImage || product.image,
               price: product.price,
-              currency: 'USD',
-              brand: product.category || 'DigiCam',
+              currency: 'BDT',
+              brand: product.category || 'Digicam Market',
               sku: product._id,
               stock: product.stock,
               rating: avgRating,
@@ -411,7 +411,16 @@ export default function ProductDetailPage({ params }) {
         <div className="space-y-6">
           <div>
             <p className="text-sm text-gray-500 uppercase tracking-wide mb-2">{product.category}</p>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{product.name}</h1>
+            
+            {/* Brand */}
+            {product.brand && (
+              <div className="mb-4 flex items-center gap-2">
+                <span className="bg-indigo-100 text-indigo-800 px-3 py-1 text-sm font-semibold rounded-full">
+                  {product.brand}
+                </span>
+              </div>
+            )}
             
             {/* Short Description */}
             {product.shortDescription && (
@@ -712,7 +721,7 @@ export default function ProductDetailPage({ params }) {
                     <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-md text-xs font-medium">Brand</span>
                   </div>
                   <h4 className="font-semibold text-gray-900 mb-1">Brand</h4>
-                  <p className="text-purple-600 font-medium">Digicam</p>
+                  <p className="text-purple-600 font-medium">{product.brand ||'Digicam Market'}</p>
                 </div>
 
                 {/* Stock Status Card */}

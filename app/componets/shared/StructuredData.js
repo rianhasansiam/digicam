@@ -3,7 +3,7 @@
 /**
  * Structured Data Component for SEO
  * Implements JSON-LD Schema.org markup for better search e          '@id': 'https://digicammarket.com',
-          name: 'DigiCam Market',
+          name: 'Digicam Market',
           image: 'https://digicammarket.com/logo.png',
           '@id': 'https://digicammarket.com',
           url: 'https://digicammarket.com', visibility
@@ -18,7 +18,7 @@ export default function StructuredData({ type, data }) {
         return {
           '@context': 'https://schema.org',
           '@type': 'Organization',
-          name: data.name || 'DigiCam',
+          name: data.name || 'Digicam Market',
           url: data.url || 'https://digicammarket.com',
           logo: data.logo || 'https://digicammarket.com/logo.png',
           description: data.description || 'Premium camera store offering professional photography equipment',
@@ -30,9 +30,9 @@ export default function StructuredData({ type, data }) {
             availableLanguage: ['English']
           },
           sameAs: data.socialMedia || [
-            'https://facebook.com/digicam',
-            'https://twitter.com/digicam',
-            'https://instagram.com/digicam'
+            'https://facebook.com/digicammarket',
+            'https://twitter.com/digicammarket',
+            'https://instagram.com/digicammarket'
           ]
         };
 
@@ -82,7 +82,7 @@ export default function StructuredData({ type, data }) {
         return {
           '@context': 'https://schema.org',
           '@type': 'WebSite',
-          name: data.name || 'DigiCam',
+          name: data.name || 'Digicam Market',
           url: data.url || 'https://digicammarket.com',
           description: data.description || 'Premium camera and photography equipment store',
           potentialAction: {
@@ -122,7 +122,7 @@ export default function StructuredData({ type, data }) {
           '@context': 'https://schema.org',
           '@type': 'LocalBusiness',
           '@id': 'https://digicammarket.com',
-          name: 'DigiCam',
+          name: 'Digicam Market',
           image: 'https://digicammarket.com/logo.png',
           url: 'https://digicammarket.com',
           telephone: data.phone || '+1-800-DIGICAM',
@@ -155,7 +155,7 @@ export default function StructuredData({ type, data }) {
         return {
           '@context': 'https://schema.org',
           '@type': 'Store',
-          name: 'DigiCam',
+          name: 'Digicam Market',
           url: 'https://digicammarket.com',
           description: 'Professional cameras and photography equipment',
           image: 'https://digicammarket.com/logo.png',

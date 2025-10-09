@@ -5,7 +5,8 @@ import { getCollection } from '../../../../lib/mongodb';
 // DELETE - Delete user by ID
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     
     if (!id) {
       return NextResponse.json(
@@ -61,7 +62,8 @@ export async function DELETE(request, { params }) {
 // PATCH - Update user by ID
 export async function PATCH(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     const updateData = await request.json();
     
     if (!id) {
@@ -137,7 +139,8 @@ export async function PATCH(request, { params }) {
 // GET - Get specific user by ID
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    // ✅ FIX: Await params in Next.js 15
+    const { id } = await params;
     
     if (!id) {
       return NextResponse.json(

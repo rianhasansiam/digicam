@@ -27,7 +27,7 @@ const PrivacyPageClient = () => {
     title: 'Privacy Policy Overview',
       icon: Shield,
       content: [
-  'At Digicam, we are committed to protecting your privacy and ensuring the security of your personal information.',
+  'At Digicam Market, we are committed to protecting your privacy and ensuring the security of your personal information.',
         'This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or make a purchase.',
   'By using our services, you agree to the collection and use of information in accordance with this policy.',
         'We encourage you to read this policy carefully and contact us if you have any questions.'
@@ -188,8 +188,8 @@ const PrivacyPageClient = () => {
       icon: Mail,
       content: [
         'If you have questions about this Privacy Policy or our data practices, please contact us:',
-  'Privacy Officer: privacy@digicam.com',
-  'General Inquiries: support@digicam.com',
+  'Privacy Officer: privacy@digicammarket.com',
+  'General Inquiries: support@digicammarket.com',
         'Phone: +1 (555) 123-4567',
         'Address: 123 Camera Street, Photo City, PC 12345',
         'We will respond to your inquiries within a reasonable timeframe.'
@@ -238,7 +238,7 @@ const PrivacyPageClient = () => {
             >
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gray-600 rounded-xl flex items-center justify-center">
                     <section.icon className="w-6 h-6 text-white" />
                   </div>
                 </div>
@@ -306,7 +306,7 @@ const PrivacyPageClient = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
             <div className="flex items-center justify-center space-x-2 text-white">
               <Mail className="w-5 h-5" />
-              <span className="text-sm">privacy@digicam.com</span>
+              <span className="text-sm">privacy@digicammarket.com</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-white">
               <Phone className="w-5 h-5" />

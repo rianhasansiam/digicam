@@ -14,11 +14,12 @@ async function ensureIndexes() {
     
     // Create indexes for frequently queried fields
     await products.createIndex({ category: 1 });
+    await products.createIndex({ brand: 1 });
     await products.createIndex({ style: 1 });
     await products.createIndex({ price: 1 });
     await products.createIndex({ stock: 1 });
     await products.createIndex({ createdAt: -1 });
-    await products.createIndex({ name: 'text', shortDescription: 'text', description: 'text' });
+    await products.createIndex({ name: 'text', brand: 'text', shortDescription: 'text', description: 'text' });
     
     indexesCreated = true;
     console.log('✅ Product indexes created successfully');
@@ -138,6 +139,7 @@ export async function POST(request) {
     // Prepare product data with schema structure
     const productData = {
       name: body.name.trim(),
+      brand: body.brand ? body.brand.trim() : '',
       category: body.category.trim(),
       style: body.style.trim(),
       price: Number(body.price),

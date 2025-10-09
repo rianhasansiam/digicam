@@ -26,8 +26,8 @@ export default function Footer() {
                   className='w-16 h-14'
                   style={{ height: "auto" }}
                 />
-                  <h1 className="text-[28px] lg:text-[32px] font-bold text-white">
-                    Digicam
+                  <h1 className="text-lg lg:text-2xl font-bold text-white">
+                    Digicam Market
                   </h1>
               </Link>
               <p className="text-white/60 text-sm mb-9">
@@ -60,7 +60,7 @@ export default function Footer() {
           <hr className="h-[1px] border-t-white/10 mb-6" />
           <div className="flex flex-col sm:flex-row justify-center sm:justify-between items-center mb-2">
             <p className="text-sm text-center sm:text-left text-white/60 mb-4 sm:mb-0 sm:mr-1">
-              Digicam © {new Date().getFullYear()} Made by{" "}
+              Digicam Market © {new Date().getFullYear()} Made by{" "}
               <Link
                 href="https://rianhasansiam.me"
                 className="text-white font-medium hover:underline"

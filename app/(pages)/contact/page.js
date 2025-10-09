@@ -2,12 +2,12 @@ import ContactPageClient from './ContactPageClient';
 
 // Metadata for SEO
 export const metadata = {
-  title: "Contact Us - Digicam | Customer Support & Help",
-  description: "Get in touch with Digicam for questions about our premium camera collections. Email, phone, and visit us in New York.",
-  keywords: "contact Digicam, customer support, camera help, customer service, contact information",
+  title: "Contact Us - Digicam Market | Customer Support & Help",
+  description: "Get in touch with Digicam Market for questions about our premium camera collections. Email, phone, and visit us in New York.",
+  keywords: "contact Digicam Market, customer support, camera help, customer service, contact information",
   openGraph: {
-    title: "Contact Us - Digicam | Customer Support",
-    description: "Get in touch with Digicam for any questions about our premium camera collections.",
+    title: "Contact Us - Digicam Market | Customer Support",
+    description: "Get in touch with Digicam Market for any questions about our premium camera collections.",
     type: "website",
   },
   alternates: {

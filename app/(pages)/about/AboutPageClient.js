@@ -79,7 +79,7 @@ const AboutPageClient = ({ aboutData }) => {
         <div className="absolute inset-0 z-0">
           <Image
             src={aboutData.hero.backgroundImage}
-            alt="Digicam Camera Store"
+            alt="Digicam Market Camera Store"
             fill
             className="object-cover"
             priority
@@ -394,70 +394,70 @@ const AboutPageClient = ({ aboutData }) => {
   };
 
   // Awards Section Component
-  const AwardsSection = () => {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once: true });
+  // const AwardsSection = () => {
+  //   const ref = useRef(null);
+  //   const isInView = useInView(ref, { once: true });
 
-    return (
-      <section ref={ref} className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              {aboutData.awards.title}
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              {aboutData.awards.subtitle}
-            </p>
-          </motion.div>
+  //   return (
+  //     <section ref={ref} className="py-20 bg-gray-50">
+  //       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  //         <motion.div
+  //           className="text-center mb-16"
+  //           initial={{ opacity: 0, y: 20 }}
+  //           animate={isInView ? { opacity: 1, y: 0 } : {}}
+  //           transition={{ duration: 0.6 }}
+  //         >
+  //           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+  //             {aboutData.awards.title}
+  //           </h2>
+  //           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+  //             {aboutData.awards.subtitle}
+  //           </p>
+  //         </motion.div>
 
-          <motion.div
-            className="space-y-8"
-            variants={containerVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-          >
-            {aboutData.awards.awards.map((award, index) => (
-              <motion.div
-                key={index}
-                className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                variants={itemVariants}
-                whileHover={{ x: 10 }}
-              >
-                <div className="flex items-start space-x-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
-                      <Trophy className="w-8 h-8 text-yellow-600" />
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-3">
-                      <span className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
-                        {award.year}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                      {award.title}
-                    </h3>
-                    <p className="text-blue-600 font-medium mb-2">
-                      {award.organization}
-                    </p>
-                    <p className="text-gray-600">
-                      {award.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-    );
-  };
+  //         <motion.div
+  //           className="space-y-8"
+  //           variants={containerVariants}
+  //           initial="hidden"
+  //           animate={isInView ? "visible" : "hidden"}
+  //         >
+  //           {aboutData.awards.awards.map((award, index) => (
+  //             <motion.div
+  //               key={index}
+  //               className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+  //               variants={itemVariants}
+  //               whileHover={{ x: 10 }}
+  //             >
+  //               <div className="flex items-start space-x-6">
+  //                 <div className="flex-shrink-0">
+  //                   <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+  //                     <Trophy className="w-8 h-8 text-yellow-600" />
+  //                   </div>
+  //                 </div>
+  //                 <div className="flex-1">
+  //                   <div className="flex items-center space-x-4 mb-3">
+  //                     <span className="inline-block bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
+  //                       {award.year}
+  //                     </span>
+  //                   </div>
+  //                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
+  //                     {award.title}
+  //                   </h3>
+  //                   <p className="text-blue-600 font-medium mb-2">
+  //                     {award.organization}
+  //                   </p>
+  //                   <p className="text-gray-600">
+  //                     {award.description}
+  //                   </p>
+  //                 </div>
+  //               </div>
+  //             </motion.div>
+  //           ))}
+  //         </motion.div>
+  //       </div>
+  //     </section>
+  //   );
+  // };
 
   // CTA Section Component
   const CTASection = () => {
@@ -465,7 +465,7 @@ const AboutPageClient = ({ aboutData }) => {
     const isInView = useInView(ref, { once: true });
 
     return (
-      <section ref={ref} className="py-20 bg-black text-white">
+      <section ref={ref} className="py-20  ">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -507,7 +507,7 @@ const AboutPageClient = ({ aboutData }) => {
       <ValuesSection />
       {/* <TeamSection /> */}
       <StatsSection />
-      <AwardsSection />
+      {/* <AwardsSection /> */}
       <CTASection />
     </div>
   );

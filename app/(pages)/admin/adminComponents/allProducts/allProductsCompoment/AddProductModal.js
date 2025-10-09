@@ -12,6 +12,7 @@ const AddProductModal = ({ isOpen, onClose, categories }) => {
     name: '',
     category: '',
     style: '',
+    brand: '',
     price: '',
     originalPrice: '',
     stock: '',
@@ -29,7 +30,7 @@ const AddProductModal = ({ isOpen, onClose, categories }) => {
   const [imageUploading, setImageUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [availableSizes] = useState(['Full Frame', 'APS-C', 'Micro Four Thirds', 'Medium Format', '1-inch', '1/2.3-inch']);
-  const [availableStyles] = useState(['DSLR', 'Mirrorless', 'Point & Shoot', 'Action Camera', 'Film Camera', 'Instant Camera']);
+  const [availableStyles] = useState(['Digital Cameras', 'Handycams / Camcorders', 'Film Cameras', 'Bridge Cameras', 'DSLR Cameras', 'Mirrorless Cameras', 'Action Cameras','Instant Cameras','Disposable Cameras','Accessories (Batteries, Chargers, SD Cards, etc.)']);
   const [availableColors] = useState([
     { name: 'Black', value: 'Black', bg: 'bg-black', border: 'border-black' },
     { name: 'Silver', value: 'Silver', bg: 'bg-gray-300', border: 'border-gray-300' },
@@ -55,6 +56,7 @@ const AddProductModal = ({ isOpen, onClose, categories }) => {
         name: '',
         category: '',
         style: '',
+        brand: '',
         price: '',
         originalPrice: '',
         stock: '',
@@ -77,6 +79,7 @@ const AddProductModal = ({ isOpen, onClose, categories }) => {
   const validateForm = () => {
     const errors = {};
     if (!formData.name.trim()) errors.name = 'Product name is required';
+    if (!formData.brand.trim()) errors.brand = 'Brand name is required';
     if (!formData.category) errors.category = 'Category is required';
     if (!formData.style) errors.style = 'Style is required';
     if (!formData.price) errors.price = 'Price is required';
@@ -388,6 +391,30 @@ const AddProductModal = ({ isOpen, onClose, categories }) => {
                       {formErrors.style}
                     </p>
                   )}
+                </div>
+
+                {/* Brand */}
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Brand*
+                  </label>
+                  <input
+                    type="text"
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleChange}
+                    className={`w-full px-4 py-3 rounded-lg border ${formErrors.brand ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : 'border-gray-200/60 focus:border-gray-500 focus:ring-gray-500/20'} focus:outline-none focus:ring-2 transition-all duration-200 text-sm bg-white/80 backdrop-blur-sm`}
+                    placeholder="e.g., Canon, Nikon, Sony, Fujifilm, Panasonic"
+                  />
+                  {formErrors.brand && submitAttempted && (
+                    <p className="mt-1 text-sm text-red-600 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {formErrors.brand}
+                    </p>
+                  )}
+                  <p className="mt-1 text-xs text-gray-500">
+                    Enter the manufacturer or brand name of the camera
+                  </p>
                 </div>
               </div>
             </div>
