@@ -16,10 +16,19 @@ export default function OrderSummaryPageWrapper() {
     
     if (orderDataParam) {
       try {
-        const parsedOrderData = JSON.parse(decodeURIComponent(orderDataParam));
+        // Decode Base64 encoded order data
+        const decodedString = decodeURIComponent(atob(orderDataParam));
+        const parsedOrderData = JSON.parse(decodedString);
         setOrderData(parsedOrderData);
       } catch (error) {
         console.error('Error parsing order data:', error);
+        // Fallback: try direct decoding (for backwards compatibility)
+        try {
+          const parsedOrderData = JSON.parse(decodeURIComponent(orderDataParam));
+          setOrderData(parsedOrderData);
+        } catch (fallbackError) {
+          console.error('Fallback parsing also failed:', fallbackError);
+        }
       }
     }
     

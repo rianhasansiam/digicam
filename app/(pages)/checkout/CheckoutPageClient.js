@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useGetData } from '@/lib/hooks/useGetData';
 import { useAddData } from '@/lib/hooks/useAddData';
 import { useAppSelector, useAppDispatch } from '@/app/redux/reduxHooks';
@@ -10,7 +10,7 @@ import { useShippingTaxSettings } from '@/lib/hooks/useShippingTaxSettings';
 import { PLACEHOLDER_IMAGES } from '@/lib/constants';
 import { 
   ShoppingBag, CheckCircle, AlertCircle, 
-  ArrowLeft, User, Truck
+  ArrowLeft, User, Truck, Wallet, Upload, X, Info, Phone
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -71,12 +71,22 @@ const CheckoutPageClient = () => {
   });
   
   // State management
-  const [selectedPayment, setSelectedPayment] = useState('cod'); // Auto-select COD
+  const [selectedPayment, setSelectedPayment] = useState('advance'); // Auto-select 15% Advance
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderProcessed, setOrderProcessed] = useState(false); // Prevent multiple submissions
   const [isRedirecting, setIsRedirecting] = useState(false); // Prevent showing empty cart during redirect
   
-  // Removed transaction form refs - only COD available
+  // Payment proof modal states
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [paymentProof, setPaymentProof] = useState({
+    paymentMethod: 'bkash', // bkash or nagad
+    phoneNumber: '',
+    transactionId: '',
+    screenshot: null,
+    screenshotPreview: null
+  });
+  const fileInputRef = useRef(null);
   
   // Customer information
   const [customerInfo, setCustomerInfo] = useState({
@@ -88,9 +98,9 @@ const CheckoutPageClient = () => {
     zipCode: ''
   });
 
-  // Payment methods configuration - Only Cash on Delivery
+  // Payment methods configuration - Only 15% Advance Payment
   const paymentMethods = [
-    { id: 'cod', name: 'Cash on Delivery', icon: Truck, description: 'Pay when you receive your order' }
+    { id: 'advance', name: '15% Advance Payment', icon: Wallet, description: 'Pay 15% now, rest on delivery' }
   ];
 
   // Load cart from localStorage when products are loaded
@@ -167,6 +177,87 @@ const CheckoutPageClient = () => {
     );
   };
 
+  // Handle file upload for payment screenshot
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size should be less than 5MB');
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please upload an image file');
+        return;
+      }
+
+      setPaymentProof(prev => ({
+        ...prev,
+        screenshot: file,
+        screenshotPreview: URL.createObjectURL(file)
+      }));
+    }
+  };
+
+  // Upload image to ImageBB
+  const uploadPaymentScreenshot = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMAGEBB_API_KEY}`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        return data.data.url;
+      } else {
+        throw new Error('Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+
+  // Show payment instructions - Always show for advance payment
+  const showPaymentInstructions = () => {
+    setShowInstructions(true);
+  };
+
+  // Open payment proof modal
+  const openPaymentModal = () => {
+    setShowInstructions(false);
+    setShowPaymentModal(true);
+  };
+
+  // Close payment modal
+  const closePaymentModal = () => {
+    setShowPaymentModal(false);
+    setPaymentProof({
+      paymentMethod: 'bkash',
+      phoneNumber: '',
+      transactionId: '',
+      screenshot: null,
+      screenshotPreview: null
+    });
+  };
+
+  // Validate payment proof form
+  const isPaymentProofValid = () => {
+    return (
+      paymentProof.paymentMethod &&
+      paymentProof.phoneNumber &&
+      paymentProof.transactionId &&
+      paymentProof.screenshot
+    );
+  };
+
   // Create user if email doesn't exist in database
   const createUserIfNotExists = async (customerData) => {
     try {
@@ -222,7 +313,7 @@ const CheckoutPageClient = () => {
     }
   };
 
-  // Process order - COD only
+  // Process order - 15% Advance Payment only
   const processOrder = async () => {
     if (orderProcessed) return; // Prevent multiple submissions
     
@@ -231,11 +322,16 @@ const CheckoutPageClient = () => {
       return;
     }
 
-    // Process COD order directly
+    // Require payment proof for advance payment
+    if (!isPaymentProofValid()) {
+      alert('Please provide payment proof before placing order.');
+      return;
+    }
+
     await processOrderWithPayment();
   };
 
-  // Process order with COD payment
+  // Process order with payment details (15% Advance Payment)
   const processOrderWithPayment = async () => {
     if (orderProcessed || isProcessing) return; // Prevent multiple submissions
     
@@ -243,8 +339,26 @@ const CheckoutPageClient = () => {
     setOrderProcessed(true); // Mark order as being processed
 
     try {
+      let paymentScreenshotUrl = null;
+
+      // Upload payment screenshot
+      if (paymentProof.screenshot) {
+        try {
+          paymentScreenshotUrl = await uploadPaymentScreenshot(paymentProof.screenshot);
+        } catch (error) {
+          alert('Failed to upload payment screenshot. Please try again.');
+          setIsProcessing(false);
+          setOrderProcessed(false);
+          return;
+        }
+      }
+
       // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Calculate advance payment amount (15% of total)
+      const advanceAmount = (parseFloat(totals.total) * 0.15).toFixed(2);
+      const remainingAmount = (parseFloat(totals.total) * 0.85).toFixed(2);
 
       // Create order details for database
       const orderData = {
@@ -270,23 +384,34 @@ const CheckoutPageClient = () => {
           subtotal: (item.price || 0) * (item.quantity || 0)
         })),
         paymentMethod: {
-          type: 'cod',
-          name: 'Cash on Delivery'
+          type: 'advance',
+          name: '15% Advance Payment',
+          advancePayment: {
+            amount: advanceAmount,
+            remainingAmount: remainingAmount,
+            method: paymentProof.paymentMethod,
+            phoneNumber: paymentProof.phoneNumber,
+            transactionId: paymentProof.transactionId,
+            screenshot: paymentScreenshotUrl,
+            paidAt: new Date().toISOString()
+          }
         },
         orderSummary: {
           subtotal: parseFloat(totals.subtotal),
           shipping: parseFloat(totals.shipping),
           tax: parseFloat(totals.tax),
-          total: parseFloat(totals.total)
+          total: parseFloat(totals.total),
+          advancePaid: parseFloat(advanceAmount),
+          remainingAmount: parseFloat(remainingAmount)
         },
-        status: 'confirmed',
+        status: 'payment_verified',
+        paymentStatus: 'partial',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
 
       // Save order to database
       const savedOrder = await addOrder(orderData);
-
 
       // Check if user exists and create new user if not
       await createUserIfNotExists(customerInfo);
@@ -298,16 +423,27 @@ const CheckoutPageClient = () => {
         customer: customerInfo,
         items: enrichedCartItems,
         payment: {
-          id: 'cod',
-          type: 'cod',
-          name: 'Cash on Delivery',
-          description: 'Pay when you receive your order'
+          id: 'advance',
+          type: 'advance',
+          name: '15% Advance Payment',
+          description: `Advance paid: ৳${advanceAmount}, Remaining: ৳${remainingAmount}`,
+          advancePayment: {
+            amount: advanceAmount,
+            remainingAmount: remainingAmount,
+            method: paymentProof.paymentMethod,
+            transactionId: paymentProof.transactionId
+          }
         },
         totals: totals,
-        status: 'confirmed'
+        status: 'payment_verified'
       };
 
       setIsProcessing(false);
+
+      // Close payment modal if open
+      if (showPaymentModal) {
+        closePaymentModal();
+      }
 
       // Set redirecting state to prevent showing empty cart
       setIsRedirecting(true);
@@ -316,12 +452,15 @@ const CheckoutPageClient = () => {
       dispatch(clearCart());
 
       // Redirect to order summary page
-      const orderDataParam = encodeURIComponent(JSON.stringify(order));
-      router.push(`/orderSummary?orderData=${orderDataParam}`);
+      // Use Base64 encoding to safely pass complex data
+      const orderDataString = JSON.stringify(order);
+      const orderDataBase64 = btoa(encodeURIComponent(orderDataString));
+      router.push(`/orderSummary?orderData=${orderDataBase64}`);
 
     } catch (error) {
       console.error('Error processing order:', error);
       setIsProcessing(false);
+      setOrderProcessed(false);
       alert('There was an error processing your order. Please try again.');
     }
   };
@@ -564,7 +703,7 @@ const CheckoutPageClient = () => {
 
               {/* Place Order Button */}
               <motion.button
-                onClick={processOrder}
+                onClick={showPaymentInstructions}
                 disabled={!isFormValid() || isProcessing || orderProcessed}
                 className={`w-full mt-6 py-4 rounded-lg font-medium text-white transition-colors ${
                   isFormValid() && !isProcessing && !orderProcessed
@@ -582,7 +721,7 @@ const CheckoutPageClient = () => {
                 ) : orderProcessed ? (
                   'Order Placed Successfully!'
                 ) : (
-                  `Place Order - ৳${totals.total}`
+                  `Pay 15% (৳${(parseFloat(totals.total) * 0.15).toFixed(2)}) & Place Order`
                 )}
               </motion.button>
 
@@ -607,6 +746,385 @@ const CheckoutPageClient = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* Payment Instructions Modal */}
+        <AnimatePresence>
+          {showInstructions && (
+            <motion.div
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowInstructions(false)}
+            >
+              <motion.div
+                className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="p-6">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Info className="w-6 h-6 text-gray-600" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Payment Instructions</h2>
+                        <p className="text-sm text-gray-600">15% Advance Payment</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowInstructions(false)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  {/* Payment Amount */}
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-6">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-600 mb-2">Amount to Pay (15%)</p>
+                      <p className="text-4xl font-bold text-blue-600">
+                        ৳{(parseFloat(totals.total) * 0.15).toFixed(2)}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-2">
+                        Remaining: ৳{(parseFloat(totals.total) * 0.85).toFixed(2)} (Pay on Delivery)
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Instructions */}
+                  <div className="space-y-6 mb-6">
+                    <div>
+                      <h3 className="font-bold text-gray-900 mb-3 flex items-center">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                          <span className="text-blue-600 font-bold">1</span>
+                        </div>
+                        Choose Your Payment Method
+                      </h3>
+                      <div className="ml-11 space-y-2">
+                        <div className="flex items-center space-x-3 p-3 bg-pink-50 rounded-lg">
+                          <Phone className="w-5 h-5 text-pink-600" />
+                          <div>
+                            <p className="font-medium text-gray-900">bKash</p>
+                            <p className="text-sm text-gray-600">Personal: 01XXXXXXXXX</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-3 p-3 bg-orange-50 rounded-lg">
+                          <Phone className="w-5 h-5 text-orange-600" />
+                          <div>
+                            <p className="font-medium text-gray-900">Nagad</p>
+                            <p className="text-sm text-gray-600">Personal: 01XXXXXXXXX</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-gray-900 mb-3 flex items-center">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                          <span className="text-blue-600 font-bold">2</span>
+                        </div>
+                        Make the Payment
+                      </h3>
+                      <ul className="ml-11 space-y-2 text-gray-700">
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Open your bKash or Nagad app</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Select &quot;Send Money&quot;</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Enter the number shown above</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Enter amount: ৳{(parseFloat(totals.total) * 0.15).toFixed(2)}</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Complete the transaction</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 className="font-bold text-gray-900 mb-3 flex items-center">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                          <span className="text-blue-600 font-bold">3</span>
+                        </div>
+                        Submit Payment Proof
+                      </h3>
+                      <ul className="ml-11 space-y-2 text-gray-700">
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Take a screenshot of the transaction confirmation</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Fill in the payment details in the next form</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Upload the screenshot as proof</span>
+                        </li>
+                        <li className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>Enter your transaction ID correctly</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Important Notes */}
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                    <h4 className="font-bold text-yellow-800 mb-2 flex items-center">
+                      <AlertCircle className="w-5 h-5 mr-2" />
+                      Important Notes
+                    </h4>
+                    <ul className="text-sm text-yellow-700 space-y-1">
+                      <li>• Your order will be confirmed after payment verification</li>
+                      <li>• Keep your transaction ID safe for reference</li>
+                      <li>• Payment verification may take 1-2 hours</li>
+                      <li>• Incorrect details may delay your order</li>
+                    </ul>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => setShowInstructions(false)}
+                      className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={openPaymentModal}
+                      className="flex-1 px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
+                    >
+                      I&apos;ve Made the Payment
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Payment Proof Modal */}
+        <AnimatePresence>
+          {showPaymentModal && (
+            <motion.div
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closePaymentModal}
+            >
+              <motion.div
+                className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="p-6">
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <Wallet className="w-6 h-6 text-green-600" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Payment Proof</h2>
+                        <p className="text-sm text-gray-600">Submit your payment details</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={closePaymentModal}
+                      className="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  {/* Form */}
+                  <div className="space-y-4">
+                    {/* Payment Method Selection */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Payment Method *
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          onClick={() => setPaymentProof(prev => ({ ...prev, paymentMethod: 'bkash' }))}
+                          className={`p-4 border-2 rounded-lg transition-all ${
+                            paymentProof.paymentMethod === 'bkash'
+                              ? 'border-pink-500 bg-pink-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <p className="font-bold text-lg">bKash</p>
+                          <p className="text-xs text-gray-600">Mobile Banking</p>
+                        </button>
+                        <button
+                          onClick={() => setPaymentProof(prev => ({ ...prev, paymentMethod: 'nagad' }))}
+                          className={`p-4 border-2 rounded-lg transition-all ${
+                            paymentProof.paymentMethod === 'nagad'
+                              ? 'border-orange-500 bg-orange-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <p className="font-bold text-lg">Nagad</p>
+                          <p className="text-xs text-gray-600">Mobile Banking</p>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Phone Number */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Your {paymentProof.paymentMethod === 'bkash' ? 'bKash' : 'Nagad'} Number *
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="01XXXXXXXXX"
+                        value={paymentProof.phoneNumber}
+                        onChange={(e) => setPaymentProof(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        maxLength="11"
+                      />
+                    </div>
+
+                    {/* Transaction ID */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Transaction ID *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter transaction ID (e.g., 8HFGT4R8PM)"
+                        value={paymentProof.transactionId}
+                        onChange={(e) => setPaymentProof(prev => ({ ...prev, transactionId: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        You can find this in your transaction message
+                      </p>
+                    </div>
+
+                    {/* Screenshot Upload */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Payment Screenshot *
+                      </label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                        {paymentProof.screenshotPreview ? (
+                          <div className="space-y-3">
+                            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                              <Image
+                                src={paymentProof.screenshotPreview}
+                                alt="Payment Screenshot"
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                            <button
+                              onClick={() => {
+                                setPaymentProof(prev => ({
+                                  ...prev,
+                                  screenshot: null,
+                                  screenshotPreview: null
+                                }));
+                                if (fileInputRef.current) {
+                                  fileInputRef.current.value = '';
+                                }
+                              }}
+                              className="text-sm text-red-600 hover:text-red-700"
+                            >
+                              Remove Image
+                            </button>
+                          </div>
+                        ) : (
+                          <div>
+                            <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                            <p className="text-sm text-gray-600 mb-2">
+                              Click to upload or drag and drop
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              PNG, JPG or JPEG (MAX. 5MB)
+                            </p>
+                          </div>
+                        )}
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                        {!paymentProof.screenshotPreview && (
+                          <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="mt-3 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+                          >
+                            Choose File
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Amount Info */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-700">Amount Paid (15%)</span>
+                        <span className="text-lg font-bold text-blue-600">
+                          ৳{(parseFloat(totals.total) * 0.15).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex space-x-3 mt-6">
+                    <button
+                      onClick={closePaymentModal}
+                      disabled={isProcessing}
+                      className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={processOrder}
+                      disabled={!isPaymentProofValid() || isProcessing}
+                      className={`flex-1 px-6 py-3 rounded-lg font-medium text-white transition-colors ${
+                        isPaymentProofValid() && !isProcessing
+                          ? 'bg-green-600 hover:bg-green-700'
+                          : 'bg-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {isProcessing ? (
+                        <div className="flex items-center justify-center space-x-2">
+                          <LoadingSpinner size="sm" color="white" />
+                          <span>Processing...</span>
+                        </div>
+                      ) : (
+                        'Submit & Place Order'
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

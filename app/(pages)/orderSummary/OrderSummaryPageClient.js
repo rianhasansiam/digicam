@@ -79,7 +79,7 @@ const OrderSummaryPageClient = ({ orderData }) => {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text('Premium Camera Store', 20, 30);
-    doc.text('Since 2018', 20, 36);
+    doc.text('Since 2025', 20, 36);
     
     // Order Receipt badge
     doc.setFillColor(...colors.accent);
@@ -171,9 +171,9 @@ const OrderSummaryPageClient = ({ orderData }) => {
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.text('PRODUCT', 20, y + 6);
-    doc.text('QTY', pageWidth - 80, y + 6);
-    doc.text('PRICE', pageWidth - 60, y + 6);
-    doc.text('TOTAL', pageWidth - 35, y + 6, { align: 'right' });
+    doc.text('QTY', 110, y + 6);
+    doc.text('PRICE', 130, y + 6);
+    doc.text('TOTAL', pageWidth - 20, y + 6, { align: 'right' });
     y += 12;
 
     // Table rows
@@ -185,7 +185,9 @@ const OrderSummaryPageClient = ({ orderData }) => {
         doc.rect(15, y - 4, pageWidth - 30, 8, 'F');
       }
       
-      const itemTotal = (item.price * item.quantity).toFixed(2);
+      const itemPrice = parseFloat(item.price || 0);
+      const itemQty = parseInt(item.quantity || 1);
+      const itemTotal = (itemPrice * itemQty).toFixed(2);
       const truncatedName = (item.name || 'Product').length > 32 ?
         (item.name || 'Product').substring(0, 29) + '...' :
         (item.name || 'Product');
@@ -194,10 +196,10 @@ const OrderSummaryPageClient = ({ orderData }) => {
       doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
       doc.text(truncatedName, 20, y + 2);
-      doc.text(item.quantity?.toString() || '1', pageWidth - 80, y + 2);
-      doc.text(`৳${item.price?.toFixed(2) || '0.00'}`, pageWidth - 60, y + 2);
+      doc.text(itemQty.toString(), 110, y + 2);
+      doc.text('BDT ' + itemPrice.toFixed(2), 130, y + 2);
       doc.setFont('helvetica', 'bold');
-      doc.text(`৳${itemTotal}`, pageWidth - 20, y + 2, { align: 'right' });
+      doc.text('BDT ' + itemTotal, pageWidth - 20, y + 2, { align: 'right' });
       y += 8;
     });
 
@@ -220,19 +222,19 @@ const OrderSummaryPageClient = ({ orderData }) => {
     doc.setFont('helvetica', 'normal');
     doc.text('Subtotal:', pageWidth - 80, y + 8);
     doc.setTextColor(...colors.text);
-    doc.text(`৳${orderData.totals?.subtotal || '0.00'}`, pageWidth - 20, y + 8, { align: 'right' });
+    doc.text('BDT ' + parseFloat(orderData.totals?.subtotal || 0).toFixed(2), pageWidth - 20, y + 8, { align: 'right' });
     
     // Shipping
     doc.setTextColor(...colors.mediumGray);
     doc.text('Shipping:', pageWidth - 80, y + 16);
     doc.setTextColor(...colors.text);
-    doc.text(`৳${orderData.totals?.shipping || '0.00'}`, pageWidth - 20, y + 16, { align: 'right' });
+    doc.text('BDT ' + parseFloat(orderData.totals?.shipping || 0).toFixed(2), pageWidth - 20, y + 16, { align: 'right' });
     
     // Tax
     doc.setTextColor(...colors.mediumGray);
     doc.text('Tax:', pageWidth - 80, y + 24);
     doc.setTextColor(...colors.text);
-    doc.text(`৳${orderData.totals?.tax || '0.00'}`, pageWidth - 20, y + 24, { align: 'right' });
+    doc.text('BDT ' + parseFloat(orderData.totals?.tax || 0).toFixed(2), pageWidth - 20, y + 24, { align: 'right' });
     
     // Divider
     doc.setDrawColor(...colors.border);
@@ -245,7 +247,7 @@ const OrderSummaryPageClient = ({ orderData }) => {
     doc.setFontSize(11);
     doc.setFont('helvetica', 'bold');
     doc.text('TOTAL:', pageWidth - 80, y + 37);
-    doc.text(`৳${orderData.totals?.total || '0.00'}`, pageWidth - 20, y + 37, { align: 'right' });
+    doc.text('BDT ' + parseFloat(orderData.totals?.total || 0).toFixed(2), pageWidth - 20, y + 37, { align: 'right' });
 
     // === Professional Footer ===
     doc.setDrawColor(...colors.border);
@@ -436,8 +438,8 @@ const OrderSummaryPageClient = ({ orderData }) => {
                 </div>
                 
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">৳{(item.price * item.quantity).toFixed(2)}</p>
-                  <p className="text-sm text-gray-600">৳{item.price}/item</p>
+                  <p className="font-semibold text-gray-900">৳{(parseFloat(item.price || 0) * parseInt(item.quantity || 1)).toFixed(2)}</p>
+                  <p className="text-sm text-gray-600">৳{parseFloat(item.price || 0).toFixed(2)}/item</p>
                 </div>
               </div>
             ))}
@@ -455,19 +457,19 @@ const OrderSummaryPageClient = ({ orderData }) => {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-600">Subtotal:</span>
-              <span className="font-medium">৳{orderData.totals?.subtotal}</span>
+              <span className="font-medium">৳{parseFloat(orderData.totals?.subtotal || 0).toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Shipping:</span>
-              <span className="font-medium">৳{orderData.totals?.shipping}</span>
+              <span className="font-medium">৳{parseFloat(orderData.totals?.shipping || 0).toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Tax:</span>
-              <span className="font-medium">৳{orderData.totals?.tax}</span>
+              <span className="font-medium">৳{parseFloat(orderData.totals?.tax || 0).toFixed(2)}</span>
             </div>
             <div className="border-t pt-3 flex justify-between text-lg font-bold">
               <span>Total:</span>
-              <span className="text-indigo-600">৳{orderData.totals?.total}</span>
+              <span className="text-indigo-600">৳{parseFloat(orderData.totals?.total || 0).toFixed(2)}</span>
             </div>
           </div>
         </motion.div>
@@ -562,7 +564,7 @@ const OrderSummaryPageClient = ({ orderData }) => {
                     </div>
                     <div>
                       <span className="font-medium text-gray-600">Total Amount:</span>
-                      <p className="text-gray-900 font-semibold">৳{orderData.totals?.total}</p>
+                      <p className="text-gray-900 font-semibold">৳{parseFloat(orderData.totals?.total || 0).toFixed(2)}</p>
                     </div>
                   </div>
                 </div>
@@ -612,7 +614,7 @@ const OrderSummaryPageClient = ({ orderData }) => {
                       })()}
                       <span className="font-medium">{orderData.payment?.name}</span>
                     </div>
-                    <span className="font-bold text-lg text-green-600">৳{orderData.totals?.total}</span>
+                    <span className="font-bold text-lg text-green-600">৳{parseFloat(orderData.totals?.total || 0).toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -644,8 +646,8 @@ const OrderSummaryPageClient = ({ orderData }) => {
                           <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-gray-900">৳{(item.price * item.quantity).toFixed(2)}</p>
-                          <p className="text-sm text-gray-600">৳{item.price}/item</p>
+                          <p className="font-semibold text-gray-900">৳{(parseFloat(item.price || 0) * parseInt(item.quantity || 1)).toFixed(2)}</p>
+                          <p className="text-sm text-gray-600">৳{parseFloat(item.price || 0).toFixed(2)}/item</p>
                         </div>
                       </div>
                     ))}
@@ -658,19 +660,19 @@ const OrderSummaryPageClient = ({ orderData }) => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Subtotal:</span>
-                      <span className="font-medium">৳{orderData.totals?.subtotal}</span>
+                      <span className="font-medium">৳{parseFloat(orderData.totals?.subtotal || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Shipping:</span>
-                      <span className="font-medium">৳{orderData.totals?.shipping}</span>
+                      <span className="font-medium">৳{parseFloat(orderData.totals?.shipping || 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Tax:</span>
-                      <span className="font-medium">৳{orderData.totals?.tax}</span>
+                      <span className="font-medium">৳{parseFloat(orderData.totals?.tax || 0).toFixed(2)}</span>
                     </div>
                     <div className="border-t pt-2 flex justify-between text-lg font-bold">
                       <span className="text-gray-900">Total:</span>
-                      <span className="text-green-600">৳{orderData.totals?.total}</span>
+                      <span className="text-green-600">৳{parseFloat(orderData.totals?.total || 0).toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
